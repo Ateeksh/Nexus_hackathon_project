@@ -1,1 +1,2 @@
 myenv/ # Add myenv folder to .gitignore
+.env/
