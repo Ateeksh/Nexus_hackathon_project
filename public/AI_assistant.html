@@ -20,15 +20,22 @@
     var conversation = [
     {"role": "developer", "content": "You are a fitness assistant coach. Help the user "},
     ]
-
     function addMessage(message){
-
+        const chatbox = document.getElementById("chat-box")
+        const messageElement = document.createElement('div');
+        messageElement.innerHTML= message
+        chatbox.appendChild(messageElement);
+        chatbox.scrollTop = chatbox.scrollHeight; 
     }
     function addResponse(response){
-
+        const chatbox = document.getElementById("chat-box")
+        const messageElement = document.createElement('div');
+        messageElement.innerHTML= response
+        chatbox.appendChild(messageElement);
+        chatbox.scrollTop = chatbox.scrollHeight; 
     }   
     function ask(input){
-
+        
     }
   </script>
 </body>
