@@ -21,5 +21,4 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('app/',include('Fit_AI.urls'))
-
 ]

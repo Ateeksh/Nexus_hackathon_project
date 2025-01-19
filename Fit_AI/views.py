@@ -17,4 +17,17 @@ def ask(request):
         )
         return JsonResponse({'access': completion})
 
+def login(request):
+  return render(request,'Login.html')
 
+def register(request):
+  return render(request,'register.html')
+
+def main(request):
+  return render(request,'App.html')
+
+def Ai(request):
+  return render(request,'AI_assistant.html')
+
+def scan(request):
+  return render(request,'calories_camera.html')

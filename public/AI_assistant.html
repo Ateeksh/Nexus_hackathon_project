@@ -8,6 +8,10 @@
 </head>
 
 <body>
+    <div id = "nav">
+        <input type = "button" value = "Back" id  ="return">
+        <input type  = "button" value = "Home" id = "main">
+    </div>
     <div id = "chat-box"> 
 
     </div>
@@ -20,8 +24,19 @@
     var conversation = [
     {"role": "developer", "content": "You are a fitness assistant coach. Help the user "},
     ]
+    document.getElementById("main").addEventListener("click", function() {
+        window.location.href = "/app/home"
+    })
+    document.getElementById("input-submit").addEventListener("click", function() {
+        const inp = document.getElementById("input-box")
+        let prompt = inp.value 
+        prompt = {"role": "user", "content": prompt},
+        ask(prompt)(res=>{
+            addResponse(res)
+        })
+    })
     function addMessage(message){
-        const chatbox = document.getElementById("chat-box")
+        const chatbox =  document.getElementById("chat-box")
         const messageElement = document.createElement('div');
         messageElement.innerHTML= message
         chatbox.appendChild(messageElement);
@@ -34,8 +49,32 @@
         chatbox.appendChild(messageElement);
         chatbox.scrollTop = chatbox.scrollHeight; 
     }   
-    function ask(input){
-        
+
+    async function ask(input){
+        const url_path = url+"/app/ask"
+        conversation.push(input)
+      const inputData = { prompt: input};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data.balance; 
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
     }
   </script>
 </body>

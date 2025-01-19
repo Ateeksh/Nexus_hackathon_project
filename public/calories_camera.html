@@ -8,8 +8,39 @@
 </head>
 
 <body>
+    <div id ="Info">
+        Calories numbers are estimated and not exact. Recipies or nutrient information are prefered
+    </div>
+    <div id = "information">
+        Calories:
+    </div>
+    <div>
+        <img id="imagePreview" src="" alt="Image Preview" style="max-width: 100%; display: none;">
+    </div>
 
+    <div id = "Add">
+        <input id = "addcals" type = "button" value = "Add to calories"> 
+    </div>
+    <div>
+    <input type="file" id="fileUpload"  accept=".jpg, .jpeg, .png, .gif, .tiff, .bmp">
+    <input type = "button" id = "submitter" value = "submit">
+    </div>
   <script>
+    document.getElementById('fileUpload').addEventListener('change', function () {
+        const imageFile = this.files[0];
+        const pins = document.getElementById("filePinIcon");
+        const imageUrl = URL.createObjectURL(imageFile);
+        const imagePreview = document.getElementById("imagePreview")
+        imagePreview.src = imageUrl;
+        imagePreview.style.display = 'block'; 
+
+    });
+    document.getElementById('submitter').addEventListener('click', function () {
+        
+    })
+    document.getElementById('addcals').addEventListener('click', function () {
+        
+    })
   </script>
 </body>
 
