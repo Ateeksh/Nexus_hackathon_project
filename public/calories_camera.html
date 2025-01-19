@@ -9,10 +9,10 @@
 
 <body>
     <div id ="Info">
-        Calories numbers are estimated and not exact. Recipies or nutrient information are prefered
+        Nutrient numbers are estimated and not exact. Recipies or nutrient information are prefered
     </div>
     <div id = "information">
-        Calories:
+        <input type="text" value="0" readonly id="myTextbox"> Calories
     </div>
     <div>
         <img id="imagePreview" src="" alt="Image Preview" style="max-width: 100%; display: none;">
@@ -33,13 +33,12 @@
         const imagePreview = document.getElementById("imagePreview")
         imagePreview.src = imageUrl;
         imagePreview.style.display = 'block'; 
-
     });
     document.getElementById('submitter').addEventListener('click', function () {
-        
+        document.getElementById('myTextbox').removeAttribute('readonly');
     })
     document.getElementById('addcals').addEventListener('click', function () {
-        
+        Number(document.getElementById('myTextbox').value)
     })
   </script>
 </body>
