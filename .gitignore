@@ -1,2 +1,2 @@
 myenv/ # Add myenv folder to .gitignore
-.env/
+Fit_AI/.env

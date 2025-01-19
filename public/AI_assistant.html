@@ -24,36 +24,10 @@
     var conversation = [
     {"role": "developer", "content": "You are a fitness assistant coach. Help the user "},
     ]
-    document.getElementById("main").addEventListener("click", function() {
-        window.location.href = "/app/home"
-    })
-    document.getElementById("input-submit").addEventListener("click", function() {
-        const inp = document.getElementById("input-box")
-        let prompt = inp.value 
-        prompt = {"role": "user", "content": prompt},
-        ask(prompt)(res=>{
-            addResponse(res)
-        })
-    })
-    function addMessage(message){
-        const chatbox =  document.getElementById("chat-box")
-        const messageElement = document.createElement('div');
-        messageElement.innerHTML= message
-        chatbox.appendChild(messageElement);
-        chatbox.scrollTop = chatbox.scrollHeight; 
-    }
-    function addResponse(response){
-        const chatbox = document.getElementById("chat-box")
-        const messageElement = document.createElement('div');
-        messageElement.innerHTML= response
-        chatbox.appendChild(messageElement);
-        chatbox.scrollTop = chatbox.scrollHeight; 
-    }   
-
     async function ask(input){
-        const url_path = url+"/app/ask"
+        const url_path = "/app/ask"
         conversation.push(input)
-      const inputData = { prompt: input};
+      const inputData = { prompt: conversation};
       try {
           const response = await fetch(url_path, {
               method: 'POST',
@@ -70,12 +44,41 @@
           }
 
           const data = await response.json();
-          return data.balance; 
+          return data; 
       } catch (error) {
           console.error("Fetch error:", error);
           return null;
       }
     }
+    document.getElementById("main").addEventListener("click", function() {
+        window.location.href = "/app/home"
+    })
+    document.getElementById("input-submit").addEventListener("click", function() {
+        const inp = document.getElementById("input-box")
+        let prompt = inp.value 
+        addMessage(prompt)
+        inp.value = ""
+        prompt = {"role": "user", "content": prompt},
+        ask(prompt).then(res=>{
+            console.log(res.response)
+            addResponse(res.response)
+            conversation.push( {"role": "assistant", "content": res.response})
+        })
+    })
+    function addMessage(message){
+        const chatbox =  document.getElementById("chat-box")
+        const messageElement = document.createElement('div');
+        messageElement.innerHTML= message
+        chatbox.appendChild(messageElement);
+        chatbox.scrollTop = chatbox.scrollHeight; 
+    }
+    function addResponse(response){
+        const chatbox = document.getElementById("chat-box")
+        const messageElement = document.createElement('div');
+        messageElement.innerHTML= response
+        chatbox.appendChild(messageElement);
+        chatbox.scrollTop = chatbox.scrollHeight; 
+    }   
   </script>
 </body>
 

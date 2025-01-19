@@ -8,9 +8,19 @@
 </head>
 
 <body>
-
+    <div id  = "current">
+        <input type="text" value="0" readonly > Kg's
+    </div>
+    <div>
+        <input type="text" value=""  id="Nweight" placeholder="New weight">
+        <input type  = "button" value  = 'submit' id = "nsubmitweight">
+    </div>
   <script>
-    
+        document.getElementById('nsubmitweight').addEventListener('click', function () {
+            const new_weight = Number(document.getElementById("Nweight").value)
+
+
+        })
   </script>
 </body>
 
