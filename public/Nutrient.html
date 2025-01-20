@@ -12,14 +12,16 @@
         <input type="text" value="0" readonly > Steps
     </div>
     <div>
-        <input type="text" value=""  id="Nsteps" placeholder="Number of calories to add">
+        <input type="text" value=""  id="Calories" placeholder="Number of calories to add">
+        <input type="text" value=""  id="Protien" placeholder="Number of protien to add">
         <input type  =" button"  value  = 'submit' id = "nsubmitcalories">
     </div>
   <script>
-        document.getElementById('nsubmitsteps').addEventListener('click', function () {
-            const new_steps = Number(document.getElementById("Nsteps").value)
+        document.getElementById('nsubmitcalories').addEventListener('click', function () {
+            const protien = Number(document.getElementById("protien").value)
+            const calories = Number(document.getElementById("calories").value)
             
-        })
+        })  
   </script>
 </body>
 

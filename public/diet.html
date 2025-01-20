@@ -10,6 +10,38 @@
 <body>
 
   <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        try{
+            const name = localStorage.getItem("name")
+            const url_path = "/app/gdiet"
+            const inputData = { name: name};
+            try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+          const data = await response.json();
+          data.access; 
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+
+    }
+    catch{
+            window.location.href = "/app/login"
+        }
+        
+    })
+    
   </script>
 </body>
 

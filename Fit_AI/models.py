@@ -1,5 +1,4 @@
 from django.db import models
-
 class UserAccount(models.Model):
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
@@ -9,15 +8,16 @@ class UserAccount(models.Model):
         return self.name
 
 class FoodItem(models.Model):
-    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
     calories = models.IntegerField()
     protein = models.FloatField()
     eaten = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+
 class Excersise(models.Model):
-    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
     Reps = models.DecimalField(decimal_places=0,max_digits=2) 
     Sets =  models.DecimalField(decimal_places=2,max_digits=5) 
     Timeperrep = models.PositiveIntegerField()  
@@ -25,19 +25,16 @@ class Excersise(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class Fitness(models.Model):
-    name = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
-    password = models.CharField(max_length=255) 
-    diet = models.ManyToManyField(FoodItem, related_name='diets')
-    excersise = models.ManyToManyField(FoodItem, related_name='excersise')
+    diet = models.ManyToManyField(FoodItem, related_name='fitness_diets')  
+    excersise = models.ManyToManyField(Excersise, related_name='fitness_exercises')  
 
     def __str__(self):
         return self.name
     
 class UserProfile(models.Model):
-    name = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     weight = models.DecimalField(decimal_places=2,max_digits=5) 
     weight_goal = models.DecimalField(decimal_places=2,max_digits=5) 
@@ -46,10 +43,10 @@ class UserProfile(models.Model):
     Additional_information = models.TextField()
     def __str__(self):
         return self.name
-    
+
 class User(models.Model):
-    name = models.CharField(max_length=255)
     email = models.CharField(max_length=255) 
+    date = models.DateField()
     steps =  models.DecimalField(decimal_places=0,max_digits=5) 
     sleep = models.DecimalField(decimal_places=0,max_digits=2) 
     calories = models.DecimalField(decimal_places=0,max_digits=5) 
@@ -57,7 +54,6 @@ class User(models.Model):
     protien = models.DecimalField(decimal_places=2,max_digits=5)
     food = models.ManyToManyField(FoodItem, related_name='diets')
     Excersise_done = models.ManyToManyField(FoodItem, related_name='excersise')
-
     def __str__(self):
         return f"{self.user.name} - {self.date}"
 

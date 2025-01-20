@@ -8,9 +8,17 @@
 </head>
 
 <body>
-
+    <div>
+        <input type="text" value=""  id="hours" placeholder="New weight"> Hours
+        <input type="text" value=""  id="minutes" placeholder="New weight"> Minutes
+        <input type  = "button" value  = 'submit' id = "nsubmitweight">
+    </div>
   <script>
-    
+        document.getElementById('nsubmitweight').addEventListener('click', function () {
+            const hours = Number(document.getElementById("hours").value)
+            const minutes = Number(document.getElementById("minutes").value)
+          
+        })  
   </script>
 </body>
 

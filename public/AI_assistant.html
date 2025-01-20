@@ -9,17 +9,15 @@
 
 <body>
     <div id = "nav">
-        <input type = "button" value = "Back" id  ="return">
         <input type  = "button" value = "Home" id = "main">
     </div>
-    <div id = "chat-box"> 
-
+    <div id = "chat-box">
+        
     </div>
     <div id = "input">
         <textarea id = "input-box"></textarea>
         <input id = "input-submit" type = "button" value = "Submit">
     </div>
-
   <script>
     var conversation = [
     {"role": "developer", "content": "You are a fitness assistant coach. Help the user "},
@@ -65,6 +63,7 @@
             conversation.push( {"role": "assistant", "content": res.response})
         })
     })
+    
     function addMessage(message){
         const chatbox =  document.getElementById("chat-box")
         const messageElement = document.createElement('div');
