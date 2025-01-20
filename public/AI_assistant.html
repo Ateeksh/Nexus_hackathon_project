@@ -6,22 +6,144 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+<style>
+    /* General styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
 
+/* Navigation bar styling */
+#nav {
+    background-color: #4CAF50;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#main {
+    background-color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#main:hover {
+    background-color: #d4edd6;
+}
+
+/* Chatbox styling */
+#chat-box {
+    background-color: #ffffff;
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    margin: 20px auto;
+    width: 80%;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Input area styling */
+#input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px auto;
+    width: 80%;
+}
+
+#input-box {
+    flex: 1;
+    height: 40px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+#input-submit {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#input-submit:hover {
+    background-color: #45a049;
+}
+
+/* Chat messages styling */
+#chat-box div {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    max-width: 60%;
+    word-wrap: break-word;
+}
+
+#chat-box div:nth-child(odd) {
+    background-color: #e7f3ff;
+}
+</style>
 <body>
     <div id = "nav">
         <input type  = "button" value = "Home" id = "main">
     </div>
     <div id = "chat-box">
-        
+
     </div>
     <div id = "input">
         <textarea id = "input-box"></textarea>
         <input id = "input-submit" type = "button" value = "Submit">
     </div>
   <script>
+    var data = ""
     var conversation = [
-    {"role": "developer", "content": "You are a fitness assistant coach. Help the user "},
-    ]
+    {"role": "developer", "content": `You are a fitness assistant coach. Help the user. Here is some information ${data}`}
+            ]
+    document.addEventListener("DOMContentLoaded", async function () {
+        try{
+            localStorage.getItem("name")
+            const url_path = "/app/get_user"
+            const inputData = { name: name};
+            try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+          var data = await response.json();
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+        }
+        catch{
+            window.location.href = "/app/login"
+        }
+
+    })
+
     async function ask(input){
         const url_path = "/app/ask"
         conversation.push(input)

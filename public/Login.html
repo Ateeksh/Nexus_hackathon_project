@@ -8,8 +8,142 @@
 </head>
 
 <body>
+  <div id = "logins">
+    <input type = "input" id = "name" placeholder = "Email">
+    <input type = "input" id = "password" placeholder = "password">
+    <input type = "button" id = "login" value = "login">
+  </div>
+  <div id = "error">
+
+  </div>
+  <div>
+    <input type="button" id = "register" value = "register instead" >
+  </div>
 
   <script>
+  url = ""
+  document.addEventListener("DOMContentLoaded", async function () {
+          try{
+            a = retrieve_cookies()
+            verify = await check(a[0],a[1])
+            if (verify==true){
+              const uid = generateUniqueId()
+              set_uid(username,uid)
+              window.location.href = `app/home`
+            }
+            else{}
+          }
+          catch{}
+        });
+  document.getElementById("login").addEventListener("click", function() {
+            const username = document.getElementById("name").value;
+            const password = document.getElementById("password").value;
+            check(username,password).then(a => {
+              console.log(a)
+              if (a.Account==true){
+              a=a.match
+              if (a==true){
+                store_cookies(username,password)
+                window.location.href = url+"/app/home"
+              }
+              else{
+                error.innerHTML = "<h3>Something doesn't match</h3>";
+              }
+            }
+            else{
+              error.innerHTML = "<h3>Account blocked</h3>";
+            }
+            }).catch(error =>{
+              error.innerHTML = "<h3>There was an error</h3>";
+            })
+            
+        });
+  async function get_user_counter(names){
+    const url_path = url+"/app/get_user_counter"
+      const inputData = { name: names};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data; 
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+  }
+
+  async function block(names){
+    const url_path = url+"/app/block_user"
+      const inputData = { name: names};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+          const data = await response.json();
+          return data; 
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+  }
+  async function check(names,pass){
+    const url_path = url+"/app/compare_name_pass"
+      const inputData = { name: names,password:pass};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+          const data = await response.json();
+          return data; 
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+  }
+
+  function store_cookies(name,password){
+    localStorage.setItem('name', name);
+    localStorage.setItem('password', password);
+  }
+  function retrieve_cookies(){
+    var a=localStorage.getItem('name');
+    var b=localStorage.getItem('password');
+    return [a,b]
+  }
+  document.getElementById("register").addEventListener("click", function() {
+        window.location.href = url+"/app/register";
+    });
   </script>
 </body>
 

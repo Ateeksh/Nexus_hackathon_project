@@ -6,7 +6,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+    }
 
+    #Info {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    #information {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #information input {
+        font-size: 16px;
+        padding: 5px;
+        margin: 5px 0;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+
+    #information input:readonly {
+        background-color: #eaeaea;
+    }
+
+    #imagePreview {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 20px auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #Add {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #Add input {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #Add input:hover {
+        background-color: #45a049;
+    }
+
+    #refresh {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #fileUpload {
+        font-size: 16px;
+        padding: 5px;
+        margin-right: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    #submitter {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #008CBA;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #submitter:hover {
+        background-color: #007bb5;
+    }
+</style>
 <body>
     <div id ="Info">
         Nutrient numbers are estimated and not exact. Recipies or nutrient values are prefered

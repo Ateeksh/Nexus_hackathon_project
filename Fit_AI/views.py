@@ -40,32 +40,6 @@ def file_upload(request):
             return JsonResponse({'message': 'File processed successfully!', 'response': openai_response})
     return JsonResponse({'error': 'Invalid request method or missing file.'}, status=400)
 
-
-class Nutrient(BaseModel):
-    Protien: str
-    Calories: list[str] 
-res_for = {
-  "name": "nutrition_analysis",
-  "schema": {
-    "type": "object",
-    "properties": {
-      "calories": {
-        "type": "number",
-        "description": "The total calories present in the food item identified from the image."
-      },
-      "protein": {
-        "type": "number",
-        "description": "The total protein content present in the food item identified from the image."
-      }
-    },
-    "required": [
-      "calories",
-      "protein"
-    ],
-    "additionalProperties": False
-  },
-  "strict": True
-}
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8") 
@@ -96,6 +70,103 @@ def send_to_openai(file_path):
     return response
 
 @csrf_exempt
+def block_user(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        name = body.get("name", "")  
+        UserAccount.objects.filter(name=name).update(usage = False)
+        return JsonResponse({'message': 'User blocked successfully', 'user_id': name})
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def check_name(request):
+    if request.method == "POST":
+            try:
+                body = json.loads(request.body)
+                name = body.get("name", "")  
+                exists = UserAccount.objects.filter(name=name).exists()
+                if exists:
+                    return JsonResponse({"exists": True})
+                else:
+                    return JsonResponse({"exists": False})
+            except json.JSONDecodeError:
+                return JsonResponse({"error": "Invalid JSON"}, status=400)
+    else:
+            return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def compare_name_pass(request):
+    if request.method == "POST":
+        body = json.loads(request.body)
+        name = body.get("name", "")  
+        passs = body.get("password", "")  
+        user = UserAccount.objects.filter(name=name, password=passs).first()
+        if user:
+            return JsonResponse({"match": True,"Account":True})
+        else:
+             return JsonResponse({"match": False,"Account":True})
+
+
+@csrf_exempt
+def get_all(request):
+    if request.method == "POST":
+        body = json.loads(request.body)
+        name = body.get("name", "")  
+        user_account = get_object_or_404(UserAccount, name=name)
+        return JsonResponse({'access': access_value})
+
+
+@csrf_exempt
+def get_user_counter(request):
+    if request.method == "POST":
+        body = json.loads(request.body)
+        name = body.get("name", "")  
+        user_account = get_object_or_404(User, name=name)
+        access_value = user_account.access  
+        return JsonResponse({
+    'date': user_account.date,
+    'steps': user_account.steps,
+    'sleep': user_account.sleep,
+    'calories': user_account.calories,
+    'weight': user_account.weight,
+    'protien': user_account.protien,  # Note: there's a typo in 'protein'
+    'food': list(user_account.food.all().values()),
+    'Excersise_done': list(user_account.Excersise_done.all().values()),  # Note: there's a typo in 'Exercise'
+    'access_value': access_value
+})
+
+@csrf_exempt
+def add_account(request):
+    if request.method == "POST":
+        body = json.loads(request.body)
+        name = body.get("name", "")
+        passs = body.get("password", "")
+        weight = body.get("we", "")
+        age = body.get("ag", "")
+        weight_goal = body.get("weg", "")
+        height = body.get("he", "")
+        Medical_history = body.get("Mh", "")
+        Additional_information =  body.get("Ai", "")
+        new_account = UserAccount(name=name, password=passs)
+        new_account.save()
+        new_profile = UserProfile(name = name,weight= weight,weight_goal=weight_goal,age=age,height=height,Medical_history=Medical_history,Additional_information=Additional_information)
+        new_profile.save()
+        return JsonResponse({'message': 'Account created successfully', 'user_id': name})
+    
+@csrf_exempt
+def get_user(request):
+    if request.method == "POST":
+        body = json.loads(request.body)
+        name = body.get("name", "")
+        user_account = str(get_object_or_404(User, user_profile__name=name))
+        user_pro = str(get_object_or_404(UserProfile, name=name))
+        final = user_account+"\n"+user_pro
+        print(final)
+        return JsonResponse({'User': final})
+
+    
+@csrf_exempt
 def getDiet(request):
     if request.method == "POST":
         body = json.loads(request.body)
@@ -121,6 +192,7 @@ def add_calories(request):
             user.save()
             return JsonResponse({"success": True, "new_balance": user.balance})
         return JsonResponse({"success": False, "message": "User not found"})
+
 @csrf_exempt
 def getCalories(request):
     if request.method == "POST":
@@ -139,33 +211,7 @@ def getCalories(request):
             return JsonResponse({"success": True, "new_balance": user.balance})
         return JsonResponse({"success": False, "message": "User not found"})
 
-@csrf_exempt
-def compare_namenpass(request):
-    pass
 
-@csrf_exempt
-def check_email(request):
-    pass
-
-@csrf_exempt
-def create_account(request):
-    pass
-
-@csrf_exempt
-def Add_to_profile(request):
-    pass
-
-@csrf_exempt
-def get_sleep(request):
-    pass
-
-@csrf_exempt
-def add_sleep(request):
-    pass 
-
-@csrf_exempt
-def add_food(request):
-    pass
 
 @csrf_exempt
 def login(request):
@@ -180,7 +226,7 @@ def Nutrient_info(request):
   return render(request,'Nutrient.html')
 
 @csrf_exempt
-def register(request):
+def Excersise_info(request):
   return render(request,'Excersise.html')
 
 @csrf_exempt
@@ -196,9 +242,21 @@ def sleep(request):
   return render(request,'sleep.html')
 
 @csrf_exempt
+def steps(request):
+  return render(request,'steps.html')
+
+@csrf_exempt
+def steps(request):
+  return render(request,'steps.html')
+
+@csrf_exempt
 def Ai(request):
   return render(request,'AI_assistant.html')
 
 @csrf_exempt
 def scan(request):
   return render(request,'calories_camera.html')
+
+@csrf_exempt
+def weight(request):
+  return render(request,'Weight.html')

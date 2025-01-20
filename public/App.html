@@ -6,37 +6,119 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+<style>
+    /* Basic reset for consistent styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+/* Container for sections */
+#sleep, #Steps, #Nutrients, #Diet, #Excersise {
+  margin-bottom: 20px;
+  margin-left: 40px;
+  margin-top:20px;
+}
+
+/* Title Styling */
+#sleep, #Steps, #Calories,#Protein {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-left: 40px;
+
+}
+
+/* Progress Container Styling */
+#progress-container {
+  width: 90%;
+  border: 1px solid #ddd;
+  height: 30px;
+  border-radius: 5px;
+  background-color: #f4f4f4;
+
+}
+
+#progress-bar {
+  height: 100%;
+  background-color: green;
+  width: 0%;  
+  border-radius: 5px;
+}
+
+#Nutrients {
+  padding-left: 10px;
+}
+
+#Diet, #Excersise {
+  display: inline-block; 
+  margin-right: 20px; 
+}
+
+#Diet img, #Excersise img {
+  width: 100%;
+  max-width: 150px; 
+  height: auto;
+  border-radius: 8px;
+}
+
+#ai-assistant {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+#ai-assistant:hover {
+  background-color: #4CAF50;
+}
+
+</style>
 <body>
     <div id = "sleep">
-        <div id="progress-container" style="width: 100%; border: 1px solid black; height: 30px;">
+        Sleep
+        <div id="progress-container" style=" border: 1px solid black; height: 30px;">
             <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>
     <div id = Steps>
-        <div id="progress-container" style="width: 100%; border: 1px solid black; height: 30px;">
+        Steps
+        <div id="progress-container" style=" border: 1px solid black; height: 30px;">
             <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>
-    <div id  = "Nutrients">
-        <div id="progress-container" style="width: 100%; border: 1px solid black; height: 30px;">
-            <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
-        </div>    
-        <div id="progress-container" style="width: 100%; border: 1px solid black; height: 30px;">
+    <div id  = "Protein">
+        Protein
+        <div id="progress-container" style=" border: 1px solid black; height: 30px;">
             <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>  
-    <div id  = "Diet">
+    <div id  = "Calories">
+        Calories
+        <div id="progress-container" style=" border: 1px solid black; height: 30px;">
+            <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
+        </div>    
+    </div>  
 
+    <div id  = "Diet">
+        <img src ="https://media.istockphoto.com/id/984186952/vector/salad-icon-vector-isolated.jpg?s=612x612&w=0&k=20&c=SRmmPC6lgIXZdQT_jpfYVyqiVhmaweA3yvrcv9zRnus=">
     </div>
     <div id  = "Excersise">
-        
+        <img src = "https://img.freepik.com/premium-vector/man-doing-push-ups-cartoon-illustration_1220412-548.jpg?semt=ais_hybrid">
     </div>
-    <input type="button" id="ai-assistant" value="AI Assistant" style="position: fixed; bottom: 20px; right: 20px; background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
-  <script>
+    <input type="button" id="ai-assistant" value="AI Assistant" style="position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
+    <script>
         document.addEventListener("DOMContentLoaded", async function () {
             const name = localStorage.getItem("name")
-            const url_path = "/app/get"
+            const url_path = "/app/get_all"
             const inputData = { name: name};
             try {
           const response = await fetch(url_path, {
@@ -52,7 +134,8 @@
               return null;
           }
           const data = await response.json();
-          return data.access; 
+          return data; 
+
       } catch (error) {
           console.error("Fetch error:", error);
           return null;
