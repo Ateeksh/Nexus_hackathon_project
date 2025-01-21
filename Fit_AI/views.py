@@ -11,8 +11,9 @@ from django.conf import settings
 import os
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
-load_dotenv("/.env")
+load_dotenv()
 @csrf_exempt
+
 def ask(request):
     if request.method == 'POST':
         body = json.loads(request.body)
@@ -46,7 +47,6 @@ def encode_image(image_path):
     
 def send_to_openai(file_path):
     apikey = os.getenv("OPENAI_API_KEY")
-    print(apikey)
     client = OpenAI(api_key=apikey )
     base64_image = encode_image(file_path)
 
@@ -56,13 +56,12 @@ def send_to_openai(file_path):
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Estimate the Calories and Protien in json and return a json like this - '{ 'calories': 300, 'protein': 15}'"},
+                        {"type": "text", "text": "Estimate the Calories and protein in json and return a json like this - '{ 'calories': 300, 'protein': 15}'"},
                 {
                     "type": "image_url",
                     "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
 
                 },
-
                     ],
                 }
             ],
@@ -73,17 +72,13 @@ def send_to_openai(file_path):
 
 @csrf_exempt
 def block_user(request):
-    if request.method == 'POST':
         body = json.loads(request.body)
         name = body.get("name", "")  
         UserAccount.objects.filter(name=name).update(usage = False)
         return JsonResponse({'message': 'User blocked successfully', 'user_id': name})
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 @csrf_exempt
 def check_name(request):
-    if request.method == "POST":
             try:
                 body = json.loads(request.body)
                 name = body.get("name", "")  
@@ -94,12 +89,9 @@ def check_name(request):
                     return JsonResponse({"exists": False})
             except json.JSONDecodeError:
                 return JsonResponse({"error": "Invalid JSON"}, status=400)
-    else:
-            return JsonResponse({"error": "Invalid request method"}, status=405)
 
 @csrf_exempt
 def compare_name_pass(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")  
         passs = body.get("password", "")  
@@ -112,10 +104,9 @@ def compare_name_pass(request):
 
 @csrf_exempt
 def get_all(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")  
-        user_account = get_object_or_404(User, name=name)
+        user_account = get_object_or_404(User, user_profile__name=name)
         user_data = {
         "name": name,
         "date": user_account.date,
@@ -123,16 +114,13 @@ def get_all(request):
         "sleep": user_account.sleep,
         "calories": user_account.calories,
         "weight": user_account.weight,
-        "protein": user_account.protien,  # Typo in model: should be "protein"
-        "food": [food_item.name for food_item in user_account.food.all()],
-        "exercise_done": [exercise.name for exercise in user_account.Excersise_done.all()]  # Typo in model: should be "exercise_done"
+        "protein": user_account.protein,  
         }
         return JsonResponse(user_data)
 
 
 @csrf_exempt
 def get_user_counter(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")  
         user_account = get_object_or_404(User, name=name)
@@ -142,14 +130,13 @@ def get_user_counter(request):
     'sleep': user_account.sleep,
     'calories': user_account.calories,
     'weight': user_account.weight,
-    'protien': user_account.protien,  # Note: there's a typo in 'protein'
+    'protein': user_account.protein, 
     'food': list(user_account.food.all().values()),
-    'Excersise_done': list(user_account.Excersise_done.all().values()),  # Note: there's a typo in 'Exercise'
+    'Excersise_done': list(user_account.Excersise_done.all().values()), 
 })
 
 @csrf_exempt
 def add_account(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")
         passs = body.get("password", "")
@@ -167,7 +154,6 @@ def add_account(request):
     
 @csrf_exempt
 def get_user(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")
         user_account = str(get_object_or_404(User, user_profile__name=name))
@@ -179,20 +165,17 @@ def get_user(request):
     
 @csrf_exempt
 def getDiet(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")  
-        user_account = get_object_or_404(Fitness, name=name)
-        access_value = user_account.diet  
-        return JsonResponse({'access': access_value})
+        user_account = get_object_or_404(Fitness, name=name) 
+        return JsonResponse({'food': [food_item.name for food_item in user_account.diet.all()]})
 
 @csrf_exempt
 def add_calories(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")
         calories = body.get("cal", "")
-        protien = body.get("pro", "")
+        protein = body.get("pro", "")
         try:
             amount = float(amount)
         except ValueError:
@@ -206,11 +189,10 @@ def add_calories(request):
 
 @csrf_exempt
 def getCalories(request):
-    if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")
         calories = body.get("cal", "")
-        protien = body.get("pro", "")
+        protein = body.get("pro", "")
         try:
             amount = float(amount)
         except ValueError:

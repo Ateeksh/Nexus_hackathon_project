@@ -86,25 +86,25 @@
     <div id = "sleep">
         Sleep
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
-            <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
+            <div id="progress-bar1" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>
     <div id = Steps>
         Steps
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
-            <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
+            <div id="progress-bar2" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>
     <div id  = "Protein">
         Protein
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
-            <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
+            <div id="progress-bar3" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>  
     <div id  = "Calories">
         Calories
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
-            <div id="progress-bar" style="width: 0%; background-color: green; height: 100%;"></div>
+            <div id="progress-bar4" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>  
 
@@ -116,31 +116,16 @@
     </div>
     <input type="button" id="ai-assistant" value="AI Assistant" style="position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
     <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            const name = localStorage.getItem("name")
-            const url_path = "/app/get_all"
-            const inputData = { name: name};
-            try {
-          const response = await fetch(url_path, {
+        fetch('/app/allvalls')
+            , {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json', 
               },
               body: JSON.stringify(inputData) 
-          });
-          if (!response.ok) {
-              const errorData = await response.json();
-              console.error("Error:", errorData);
-              return null;
-          }
-          const data = await response.json();
-          return data; 
+          }.then(response => response.json()).then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
 
-      } catch (error) {
-          console.error("Fetch error:", error);
-          return null;
-      }
-    })
         document.getElementById("sleep").addEventListener("click", function() {
             window.location.href = "/app/sleep"
         })

@@ -115,11 +115,18 @@ body {
     {"role": "developer", "content": `You are a fitness assistant coach. Help the user. Here is some information ${data}`}
             ]
     document.addEventListener("DOMContentLoaded", async function () {
-        try{
-            localStorage.getItem("name")
-            const url_path = "/app/get_user"
-            const inputData = { name: name};
-            try {
+        name = localStorage.getItem("name")
+        get_user(name).then(res=>{
+            data = res.data
+            conversation[0].content = `You are a fitness assistant coach. Help the user. Here is some information ${data}`
+
+        })
+    })
+
+    async function get_user(input){
+        const url_path = "/app/uservalls"
+      const inputData = { name: input};
+      try {
           const response = await fetch(url_path, {
               method: 'POST',
               headers: {
@@ -127,22 +134,20 @@ body {
               },
               body: JSON.stringify(inputData) 
           });
+
           if (!response.ok) {
               const errorData = await response.json();
               console.error("Error:", errorData);
               return null;
           }
-          var data = await response.json();
+
+          const data = await response.json();
+          return data; 
       } catch (error) {
           console.error("Fetch error:", error);
           return null;
       }
-        }
-        catch{
-            window.location.href = "/app/login"
-        }
-
-    })
+    }
 
     async function ask(input){
         const url_path = "/app/ask"

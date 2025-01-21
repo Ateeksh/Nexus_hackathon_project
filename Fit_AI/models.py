@@ -38,7 +38,7 @@ class UserProfile(models.Model):
     name = models.CharField(max_length=255)
     weight = models.DecimalField(decimal_places=2,max_digits=5) 
     weight_goal = models.DecimalField(decimal_places=2,max_digits=5) 
-    age= models.DecimalField(decimal_places=0,max_digits=5) 
+    age= models.DecimalField(decimal_places=0,max_digits=5,default=0) 
     height = models.DecimalField(decimal_places=2,max_digits=5) 
     Medical_history = models.TextField()
     Additional_information = models.TextField()
@@ -52,7 +52,7 @@ class User(models.Model):
     sleep = models.DecimalField(decimal_places=0,max_digits=2,default=0) 
     calories = models.DecimalField(decimal_places=0,max_digits=5,default=0) 
     weight = models.DecimalField(decimal_places=2,max_digits=5,default=0) 
-    protien = models.DecimalField(decimal_places=2,max_digits=5,default=0)
+    protein = models.DecimalField(decimal_places=2,max_digits=5,default=0)
     food = models.ManyToManyField(FoodItem, related_name='diets')
     Excersise_done = models.ManyToManyField(FoodItem, related_name='excersise')
     def __str__(self):
@@ -65,7 +65,7 @@ class UserHistory(models.Model):
     sleep = models.DecimalField(decimal_places=0, max_digits=2) 
     calories = models.DecimalField(decimal_places=0, max_digits=5) 
     weight = models.DecimalField(decimal_places=2, max_digits=5,) 
-    protien = models.DecimalField(decimal_places=2, max_digits=5)
+    protein = models.DecimalField(decimal_places=2, max_digits=5)
     
     def __str__(self):
         return f"{self.user.name} - {self.date}"

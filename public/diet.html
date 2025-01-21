@@ -13,7 +13,7 @@
     document.addEventListener("DOMContentLoaded", async function () {
         try{
             const name = localStorage.getItem("name")
-            const url_path = "/app/gdiet"
+            const url_path = "/app/getdiet"
             const inputData = { name: name};
             try {
           const response = await fetch(url_path, {
@@ -29,7 +29,7 @@
               return null;
           }
           const data = await response.json();
-          data.access; 
+          console.log(data)
       } catch (error) {
           console.error("Fetch error:", error);
           return null;
