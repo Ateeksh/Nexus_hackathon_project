@@ -11,7 +11,7 @@ from django.conf import settings
 import os
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv("/.env")
 @csrf_exempt
 def ask(request):
     if request.method == 'POST':
@@ -45,7 +45,9 @@ def encode_image(image_path):
         return base64.b64encode(image_file.read()).decode("utf-8") 
     
 def send_to_openai(file_path):
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") )
+    apikey = os.getenv("OPENAI_API_KEY")
+    print(apikey)
+    client = OpenAI(api_key=apikey )
     base64_image = encode_image(file_path)
 
     response =client.chat.completions.create(
@@ -113,8 +115,19 @@ def get_all(request):
     if request.method == "POST":
         body = json.loads(request.body)
         name = body.get("name", "")  
-        user_account = get_object_or_404(UserAccount, name=name)
-        return JsonResponse({'access': access_value})
+        user_account = get_object_or_404(User, name=name)
+        user_data = {
+        "name": name,
+        "date": user_account.date,
+        "steps": user_account.steps,
+        "sleep": user_account.sleep,
+        "calories": user_account.calories,
+        "weight": user_account.weight,
+        "protein": user_account.protien,  # Typo in model: should be "protein"
+        "food": [food_item.name for food_item in user_account.food.all()],
+        "exercise_done": [exercise.name for exercise in user_account.Excersise_done.all()]  # Typo in model: should be "exercise_done"
+        }
+        return JsonResponse(user_data)
 
 
 @csrf_exempt
@@ -123,7 +136,6 @@ def get_user_counter(request):
         body = json.loads(request.body)
         name = body.get("name", "")  
         user_account = get_object_or_404(User, name=name)
-        access_value = user_account.access  
         return JsonResponse({
     'date': user_account.date,
     'steps': user_account.steps,
@@ -133,7 +145,6 @@ def get_user_counter(request):
     'protien': user_account.protien,  # Note: there's a typo in 'protein'
     'food': list(user_account.food.all().values()),
     'Excersise_done': list(user_account.Excersise_done.all().values()),  # Note: there's a typo in 'Exercise'
-    'access_value': access_value
 })
 
 @csrf_exempt
