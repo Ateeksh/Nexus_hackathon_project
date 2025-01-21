@@ -18,6 +18,7 @@ With built-in step tracking functionality, the website encourages daily activity
 The AI-powered chatbot offers round-the-clock support, providing users with health advice, fitness tips, and answers to their queries. It enhances accessibility by making professional-level guidance available to all users. 
 
 ## User Instructions
+Register, Use the same details to log in. then use the multitude of features 
 
 ## Theme Alignments 
 This project directly supports UNSDG Goal 3 by addressing key health challenges such as physical inactivity, poor nutrition, and inadequate sleep. The platform empowers individuals to take control of their health through user-friendly tools and actionable insights, fostering sustainable and holistic well-being. The average fitness application can cost around 4000 - 12000 rupess and our product provides similar features at a much cheaper rate. 
@@ -25,6 +26,7 @@ This project directly supports UNSDG Goal 3 by addressing key health challenges 
 By integrating technology with health education, the website aspires to create a healthier, more active, and better-informed society. Through its features, it aims to reduce the risk of lifestyle-related diseases and contribute to the global effort of improving health outcomes for all.
 
 ## System Requirements 
+Need a browser with an internet connection 
 
 ## Known Limitations
 Camera calorie detection is an approximate value, based on analysis of the user's body shape
