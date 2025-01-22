@@ -9,7 +9,8 @@
 
 <body>
     <div id  = "current">
-        <input type="text" value="0" readonly > Steps
+        <input type="text" value="0" readonly > Calories
+        <input type="text" value="0" readonly > g's of Protein
     </div>
     <div>
         <input type="text" value=""  id="Calories" placeholder="Number of calories to add">
@@ -17,6 +18,38 @@
         <input type  =" button"  value  = 'submit' id = "nsubmitcalories">
     </div>
   <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+          name = localStorage.getItem("name")
+          const old = document.getElementById("old_weight")
+          get_weight(name).then(res =>{
+            old.value = res
+          })
+        })
+      async function get_nutrients(input){
+      const url_path = "/app/allvalls/"
+      const inputData = { name: input};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return [data.calories,data.protien]
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
         document.getElementById('nsubmitcalories').addEventListener('click', function () {
             const protien = Number(document.getElementById("protien").value)
             const calories = Number(document.getElementById("calories").value)

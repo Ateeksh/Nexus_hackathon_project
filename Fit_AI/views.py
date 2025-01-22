@@ -1,19 +1,19 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json
-from pydantic import BaseModel
 from openai import OpenAI
 from .models import *
 import base64
 from django.http import JsonResponse
+import datetime
 from decimal import Decimal
 from django.conf import settings
 import os
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
+import markdown
 load_dotenv()
 @csrf_exempt
-
 def ask(request):
     if request.method == 'POST':
         body = json.loads(request.body)
@@ -25,7 +25,22 @@ def ask(request):
             messages=prompt
         )
         response = completion.choices[0].message.content
+        response = markdown.markdown(response)
         return JsonResponse({'response': response})
+
+
+def ask_gpt(prompt):
+        APIKEY = os.getenv("OPENAI_API_KEY")
+        client = OpenAI(api_key=APIKEY)
+        
+        completion = client.chat.completions.create(
+            model="gpt-4o",
+            messages=prompt,
+            response_format={ "type": "json_object" }  
+        )
+        response = completion.choices[0].message.content
+        response = markdown.markdown(response)
+
 @csrf_exempt
 def file_upload(request):
     if request.method == 'POST':
@@ -41,15 +56,16 @@ def file_upload(request):
             return JsonResponse({'message': 'File processed successfully!', 'response': openai_response})
     return JsonResponse({'error': 'Invalid request method or missing file.'}, status=400)
 
+
+
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8") 
-    
+
 def send_to_openai(file_path):
     apikey = os.getenv("OPENAI_API_KEY")
     client = OpenAI(api_key=apikey )
     base64_image = encode_image(file_path)
-
     response =client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -101,39 +117,104 @@ def compare_name_pass(request):
         else:
              return JsonResponse({"match": False,"Account":True})
 
+@csrf_exempt
+def set_all(request):
+  body = json.loads(request.body)
+  name = body.get("name", "")
+  user_account = get_object_or_404(User, name=name)
+  
+  protein = body.get("protein", None)
+  if protein is not None:
+    user_account.protein = protein
+  
+  calories = body.get("calories", None)
+  if calories is not None:
+    user_account.calories = calories
+  
+  weight = body.get("weight", None)
+  if weight is not None:
+    print(weight)
+    user_account.weight = weight
+  
+  sleep = body.get("sleep", None)
+  if sleep is not None:
+    user_account.sleep = sleep
+  
+  steps = body.get("steps", None)
+  if steps is not None:
+    user_account.steps = steps
+  
+  user_account.save()
+  return JsonResponse({'message': 'User metrics set successfully', 'user_id': name})
+    
 
 @csrf_exempt
 def get_all(request):
-        body = json.loads(request.body)
-        name = body.get("name", "")  
-        user_account = get_object_or_404(User, user_profile__name=name)
-        user_data = {
-        "name": name,
-        "date": user_account.date,
-        "steps": user_account.steps,
-        "sleep": user_account.sleep,
-        "calories": user_account.calories,
-        "weight": user_account.weight,
-        "protein": user_account.protein,  
-        }
-        return JsonResponse(user_data)
-
+          body = json.loads(request.body)
+          print("19")
+          name = body.get("name", "")  
+          try:
+            print("bye")
+            user_account = get_object_or_404(User, name=name)
+            user_data = {
+          "steps": user_account.steps,
+          "sleep": user_account.sleep,
+          "calories": user_account.calories,
+          "weight": user_account.weight,
+          "protein": user_account.protein,  
+          }
+            return JsonResponse(user_data)
+          except: 
+            print("Hi")
+            return JsonResponse({"error": "User not found"})
 
 @csrf_exempt
-def get_user_counter(request):
-        body = json.loads(request.body)
-        name = body.get("name", "")  
-        user_account = get_object_or_404(User, name=name)
-        return JsonResponse({
-    'date': user_account.date,
-    'steps': user_account.steps,
-    'sleep': user_account.sleep,
-    'calories': user_account.calories,
-    'weight': user_account.weight,
-    'protein': user_account.protein, 
-    'food': list(user_account.food.all().values()),
-    'Excersise_done': list(user_account.Excersise_done.all().values()), 
-})
+def get_all_goals(request):
+          body = json.loads(request.body)
+          print("19")
+          name = body.get("name", "")  
+          try:
+            print("bye")
+            user_account = get_object_or_404(UserGoals, name=name)
+            user_data = {
+              "steps_goal": user_account.steps_goal,
+              "sleep_goal": user_account.sleep_goal,
+              "calories_goal": user_account.calories_goal,
+              "weight_goal": user_account.weight_goal,
+              "protein_goal": user_account.protein_goal,
+            }
+            return JsonResponse(user_data)
+          except: 
+            print("Hi")
+            return JsonResponse({"error": "User not found"})
+@csrf_exempt
+def set_all_goals(request):
+  body = json.loads(request.body)
+  name = body.get("name", "")
+  user_goals = get_object_or_404(UserGoals, name=name)
+  
+  protein_goal = body.get("protein_goal", None)
+  if protein_goal is not None:
+    user_goals.protein_goal = protein_goal
+  
+  calories_goal = body.get("calories_goal", None)
+  if calories_goal is not None:
+    user_goals.calories_goal = calories_goal
+  
+  weight_goal = body.get("weight_goal", None)
+  if weight_goal is not None:
+    user_goals.weight_goal = weight_goal
+  
+  sleep_goal = body.get("sleep_goal", None)
+  if sleep_goal is not None:
+    user_goals.sleep_goal = sleep_goal
+  
+  steps_goal = body.get("steps_goal", None)
+  if steps_goal is not None:
+    user_goals.steps_goal = steps_goal
+  
+  user_goals.save()
+  return JsonResponse({'message': 'User goals set successfully', 'user_id': name})
 
 @csrf_exempt
 def add_account(request):
@@ -142,68 +223,73 @@ def add_account(request):
         passs = body.get("password", "")
         weight = body.get("we", "")
         age = body.get("ag", "")
-        weight_goal = body.get("weg", "")
         height = body.get("he", "")
         Medical_history = body.get("Mh", "")
         Additional_information =  body.get("Ai", "")
         new_account = UserAccount(name=name, password=passs)
+        print(f"Saving UserAccount: name={new_account.name}, password={new_account.password}")
         new_account.save()
-        new_profile = UserProfile(name = name,weight= weight,weight_goal=weight_goal,age=age,height=height,Medical_history=Medical_history,Additional_information=Additional_information)
+        new_user = User(name=name, date=datetime.date.today(),weight=weight)
+        new_user.save()
+        new_profile = UserProfile(
+            name=name,
+            weight=weight,
+            age=age,
+            height=height,
+            Medical_history=Medical_history,
+            Additional_information=Additional_information,
+        )
         new_profile.save()
+        new_fitness = Fitness(name=name) 
+        new_fitness.save()
+        goals = UserGoals(name=name)
+        goals.save()
         return JsonResponse({'message': 'Account created successfully', 'user_id': name})
-    
+
 @csrf_exempt
 def get_user(request):
         body = json.loads(request.body)
         name = body.get("name", "")
-        user_account = str(get_object_or_404(User, user_profile__name=name))
-        user_pro = str(get_object_or_404(UserProfile, name=name))
-        final = user_account+"\n"+user_pro
-        print(final)
+        try:
+          user_account = str(get_object_or_404(User, name=name))
+        except:
+            print("user_account not working")
+        try:  
+          user_pro = str(get_object_or_404(UserProfile, name=name))
+        except:
+            print("else")
+        try:  
+          user_goals = str(get_object_or_404(UserGoals, name=name))
+        except:
+            print("else")
+        final = user_account+"\n"+user_pro+"\n"+user_goals
+        print(final) 
         return JsonResponse({'User': final})
 
-    
 @csrf_exempt
-def getDiet(request):
+def getExercise(request):
         body = json.loads(request.body)
         name = body.get("name", "")  
         user_account = get_object_or_404(Fitness, name=name) 
-        return JsonResponse({'food': [food_item.name for food_item in user_account.diet.all()]})
+        return JsonResponse({'food': [exercises.name for exercises in user_account.exercise.all()]})
 
 @csrf_exempt
-def add_calories(request):
+def set_calories(request):
         body = json.loads(request.body)
         name = body.get("name", "")
-        calories = body.get("cal", "")
-        protein = body.get("pro", "")
+        calories = body.get("calories", "")
+        protein = body.get("protein", "")
         try:
             amount = float(amount)
         except ValueError:
             return JsonResponse({"success": False, "message": "Invalid amount"})
-        user = UserAccount.objects.filter(name=name).first()
+        user = User.objects.filter(name=name).first()
         if user:
-            user.balance =  Decimal(amount)
+            user.calories =  Decimal(calories)
+            user.protein =  Decimal(protein)
             user.save()
-            return JsonResponse({"success": True, "new_balance": user.balance})
-        return JsonResponse({"success": False, "message": "User not found"})
-
-@csrf_exempt
-def getCalories(request):
-        body = json.loads(request.body)
-        name = body.get("name", "")
-        calories = body.get("cal", "")
-        protein = body.get("pro", "")
-        try:
-            amount = float(amount)
-        except ValueError:
-            return JsonResponse({"success": False, "message": "Invalid amount"})
-        user = UserAccount.objects.filter(name=name).first()
-        if user:
-            user.balance =  Decimal(amount)
-            user.save()
-            return JsonResponse({"success": True, "new_balance": user.balance})
-        return JsonResponse({"success": False, "message": "User not found"})
-
+            return JsonResponse({"success": True})
+        return JsonResponse({"success": False})
 
 
 @csrf_exempt
@@ -219,8 +305,8 @@ def Nutrient_info(request):
   return render(request,'Nutrient.html')
 
 @csrf_exempt
-def Excersise_info(request):
-  return render(request,'Excersise.html')
+def exercise_info(request):
+  return render(request,'exercise.html')
 
 @csrf_exempt
 def main(request):

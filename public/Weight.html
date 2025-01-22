@@ -9,16 +9,148 @@
 
 <body>
     <div id  = "current">
-        <input type="text" value="0" readonly > Kg's
+      Current Weight
+      <br>
+        <input type="text" value="0" id = "old_weight"readonly > Kg's
     </div>
     <div>
-        <input type="text" value=""  id="Nweight" placeholder="New weight">
-        <input type  = "button" value  = 'submit' id = "nsubmitweight">
+      Set New Weight
+      <br>
+        <input type="number" value="" id="Nweight" placeholder="New weight">
     </div>
+    <div id  = "goal">
+      Goal
+      <br>
+      <input type="number" value="0" id = "goals" > Kg's
+    </div>
+    <input type  = "button" value  = 'submit' id = "nsubmitweight">
   <script>
-        document.getElementById('nsubmitweight').addEventListener('click', function () {
-            const new_weight = Number(document.getElementById("Nweight").value)
+
+        document.addEventListener("DOMContentLoaded", async function () {
+          const name = localStorage.getItem("name")
+          const old = document.getElementById("old_weight")
+          get_weight(name).then(res =>{
+            old.value = res
+          })
+          const goalInput = document.getElementById("goals");
+            get_goal(name).then(res => {
+            console.log(res)
+            goalInput.value = res;
+            });
+          
         })
+
+        async function get_goal(name) {
+            const url_path = "/app/get_all_goals";
+            const inputData = { name: name };
+            try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data.weight_goal;
+            } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+            }
+          }
+        async function set_goal(name, goal) {
+          const url_path = "/app/set_all_goals";
+          const inputData = { name: name, weight_goal: goal };
+          try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data;
+          } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+          }
+        }
+        document.getElementById('nsubmitweight').addEventListener('click', function () {
+          const name = localStorage.getItem("name")
+          const new_weight = Number(document.getElementById("Nweight").value)
+          const goal = Number(document.getElementById("goal").value);
+          set_goal(name, goal).then(() => {
+            console.log("Goal set");
+            set_weight(name,new_weight).then(res =>{
+              console.log(res)
+            })
+          });
+        })
+        async function get_weight(input){
+      const url_path = "/app/allvalls/"
+      const inputData = { name: input};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data.weight
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
+    async function set_weight(input,weight){
+      const url_path = "/app/set_all"
+      const inputData = { name: input,weight:weight};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
   </script>
 </body>
 

@@ -36,7 +36,7 @@
           catch{}
         });
   document.getElementById("login").addEventListener("click", function() {
-            const username = document.getElementById("name").value;
+            const username = document.getElementById("name").value.toLowerCase().replace(/\s+/g, '')
             const password = document.getElementById("password").value;
             check(username,password).then(a => {
               console.log(a)

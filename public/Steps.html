@@ -9,16 +9,74 @@
 
 <body>
     <div id  = "current">
-        <input type="text" value="0" readonly > Steps
+        <input type="text" value="0" id = "old_steps"readonly > Kg's
     </div>
     <div>
-        <input type="text" value=""  id="Nsteps" placeholder="Number of steps">
-        <input type  =" button"  value  = 'submit' id = "nsubmitsteps">
+        <input type="text" value=""  id="Nsteps" placeholder="New steps">
+        <input type  = "button" value  = 'submit' id = "nsubmitsteps">
     </div>
   <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+          name = localStorage.getItem("name")
+          const old = document.getElementById("old_steps")
+          get_steps(name).then(res =>{
+            old.value = res
+          })
+        })
         document.getElementById('nsubmitsteps').addEventListener('click', function () {
             const new_steps = Number(document.getElementById("Nsteps").value)
+            
         })
+        async function get_steps(input){
+      const url_path = "/app/allvalls/"
+      const inputData = { name: input};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data.steps
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
+    async function set_step(input,step){
+      const url_path = "/app/set_all"
+      const inputData = { name: input,step:step};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
   </script>
 </body>
 

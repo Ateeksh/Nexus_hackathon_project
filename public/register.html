@@ -5,9 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
-  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
   <div id = "login">
     <input type = "input" id = "name" placeholder="Name">
@@ -16,12 +14,9 @@
   <div id = "personal-form">
     <label for="weight">Weight (kg):</label>
     <input type="number" id="weight" name="weight" step="0.01" required><br><br>
-  
-    <label for="weight_goal">Weight Goal (kg):</label>
-    <input type="number" id="weight_goal" name="weight_goal" step="0.01" required><br><br>
 
     <label for="age"> Age </label>
-    <input type="number" id="Age" name="age" step="0.01" required><br><br>
+    <input type="number" id="age" name="age" step="0.01" required><br><br>
 
     <label for="height">Height (cm):</label>
     <input type="number" id="height" name="height" step="0.01" required><br><br>
@@ -41,22 +36,23 @@
   <script>
   url = ""
   document.getElementById("register").addEventListener("click", function() {
-    name = document.getElementById("name").value
-    password = document.getElementById("password").value
-    if (name!="" && password!=""){
-    check(name).then(a => {
-      console.log(a)
-      if (a != true) {
-        const weight = parseFloat(document.getElementById("weight").value);
-        const weightGoal = parseFloat(document.getElementById("weight_goal").value);
-        const age = parseFloat(document.getElementById("age").value);
-        const height = parseFloat(document.getElementById("height").value);
-        const medicalHistory = document.getElementById("medical_history").value;
-        const additionalInformation = document.getElementById("additional_information").value;
-        create_account(name, password, weight, weightGoal, age, height, medicalHistory, additionalInformation).then(() => {
-          window.location.href = url + "/app/login";
-        }).catch(error =>{
-          error.innerHTML = "<h3>there was some error, pls try again</h3>";
+    const error = document.getElementById("error");
+    const name = document.getElementById("name").value.toLowerCase().replace(/\s+/g, '')
+    const password = document.getElementById("password").value;
+    if (name !== "" && password !== "") {
+      check(name).then(a => {
+        console.log(a);
+        if (a === false) {
+          const weight = parseFloat(document.getElementById("weight").value);
+          const age = parseFloat(document.getElementById("age").value);
+          const height = parseFloat(document.getElementById("height").value);
+          const medicalHistory = document.getElementById("medical_history").value;
+          const additionalInformation = document.getElementById("additional_information").value;
+          create_account(name, password, weight, age, height, medicalHistory, additionalInformation).then(() => {
+            console.log('here')
+            window.location.href = url + "/app/login";
+          }).catch(() => {
+            error.innerHTML = "<h3>There was some error, please try again</h3>";
         })
         
       }
@@ -97,9 +93,9 @@
           return null;
       }
   }
-  async function create_account(names,pass,weight,weight_goal,age,height,Medical_history, additional_information){
+  async function create_account(names,pass,weight,age,height,Medical_history, additional_information){
     const url_path = url+"/app/add_account"
-      const inputData = { name: names,password:pass,we:weight,weg:weight_goal,ag:age,he:height,Mh:Medical_history,Ai:additional_information};
+      const inputData = { name: names,password:pass,we:weight,ag:age,he:height,Mh:Medical_history,Ai:additional_information};
       try {
           const response = await fetch(url_path, {
               method: 'POST',

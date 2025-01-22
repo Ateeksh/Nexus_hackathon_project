@@ -7,7 +7,6 @@
   <title>Fit AI</title>
 </head>
 <style>
-    /* General styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -15,8 +14,6 @@ body {
     background-color: #f4f4f9;
     color: #333;
 }
-
-/* Navigation bar styling */
 #nav {
     background-color: #4CAF50;
     padding: 10px;
@@ -117,9 +114,9 @@ body {
     document.addEventListener("DOMContentLoaded", async function () {
         name = localStorage.getItem("name")
         get_user(name).then(res=>{
-            data = res.data
+            data = res.User
             conversation[0].content = `You are a fitness assistant coach. Help the user. Here is some information ${data}`
-
+            console.log(conversation)   
         })
     })
 

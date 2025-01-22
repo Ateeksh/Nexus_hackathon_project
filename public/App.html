@@ -7,22 +7,20 @@
   <title>Fit AI</title>
 </head>
 <style>
-    /* Basic reset for consistent styling */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Container for sections */
-#sleep, #Steps, #Nutrients, #Diet, #Excersise {
+#sleep, #Steps, #Protein,#Calories, #Diet, #Exercise {
   margin-bottom: 20px;
   margin-left: 40px;
   margin-top:20px;
 }
 
 /* Title Styling */
-#sleep, #Steps, #Calories,#Protein {
+#sleep, #Steps, #Calories,#Protein,#weight {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -51,12 +49,12 @@
   padding-left: 10px;
 }
 
-#Diet, #Excersise {
+#Diet, #Exercise {
   display: inline-block; 
   margin-right: 20px; 
 }
 
-#Diet img, #Excersise img {
+#Diet img, #Exercise img {
   width: 100%;
   max-width: 150px; 
   height: auto;
@@ -83,68 +81,174 @@
 
 </style>
 <body>
+    <div id = "weight">
+        Weight
+        <br>
+        <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "weight_val">Text</label>
+        <div id="progress-container" style=" border: 1px solid black; height: 30px;">
+            <div id="progress-bar5" style="width: 0%; background-color: green; height: 100%; text-align: right;">  </div>
+        </div>   
+    </div> 
     <div id = "sleep">
         Sleep
+        <br>
+        <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "Sleep_val">Text</label> 
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
-            <div id="progress-bar1" style="width: 0%; background-color: green; height: 100%;"></div>
+            <div id="progress-bar1" style="width: 0%; background-color: green; height: 100%; text-align: right;"> </div>
         </div>    
     </div>
     <div id = Steps>
         Steps
+        <br>
+        <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "Steps_val">Text</label> 
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
             <div id="progress-bar2" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>
     <div id  = "Protein">
         Protein
+        <br>
+        <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "Protein_val">Text</label> 
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
             <div id="progress-bar3" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>  
     <div id  = "Calories">
         Calories
+        <br>
+        <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "Calories_val">Text</label> 
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
             <div id="progress-bar4" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>  
-
     <div id  = "Diet">
         <img src ="https://media.istockphoto.com/id/984186952/vector/salad-icon-vector-isolated.jpg?s=612x612&w=0&k=20&c=SRmmPC6lgIXZdQT_jpfYVyqiVhmaweA3yvrcv9zRnus=">
     </div>
-    <div id  = "Excersise">
+    <div id  = "Exercise">
         <img src = "https://img.freepik.com/premium-vector/man-doing-push-ups-cartoon-illustration_1220412-548.jpg?semt=ais_hybrid">
     </div>
     <input type="button" id="ai-assistant" value="AI Assistant" style="position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
     <script>
-        fetch('/app/allvalls')
-            , {
+    get_user(localStorage.getItem("name")).then(res => {
+        get_goal(localStorage.getItem("name")).then(res2 => {
+        if ((res.weight / res2.weight_goal * 100) > 100) {
+            document.getElementById("progress-bar5").style.width = Math.min((res2.weight_goal / res.weight * 100), 100) + "%";
+            document.getElementById("weight_val").innerHTML = res2.weight_goal + "Kg / " + res.weight + "Kg";
+        } else {
+            document.getElementById("progress-bar5").style.width = Math.min((res.weight / res2.weight_goal * 100), 100) + "%";
+            document.getElementById("weight_val").innerHTML = res.weight + "Kg / " + res2.weight_goal + "Kg";
+        }
+        document.getElementById("progress-bar1").style.width = Math.min((res.sleep / res2.sleep_goal * 100), 100) + "%";
+        document.getElementById("Sleep_val").innerHTML = res.sleep + "Hrs / " + res2.sleep_goal + "Hrs";
+        document.getElementById("progress-bar2").style.width = Math.min((res.steps / res2.steps_goal * 100), 100) + "%";
+        document.getElementById("Steps_val").innerHTML = res.steps + " Steps / " + res2.steps_goal + " Steps";
+        document.getElementById("progress-bar3").style.width = Math.min((res.protein / res2.protein_goal * 100), 100) + "%";
+        document.getElementById("Protein_val").innerHTML = res.protein + "g / " + res2.protein_goal + "g";
+        document.getElementById("progress-bar4").style.width = Math.min((res.calories / res2.calories_goal * 100), 100) + "%";
+        document.getElementById("Calories_val").innerHTML = res.calories + "Kcal / " + res2.calories_goal + "Kcal";
+        })
+    })
+    async function get_user(input){
+      const url_path = "/app/allvalls/"
+      const inputData = { name: input};
+      try {
+          const response = await fetch(url_path, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json', 
               },
               body: JSON.stringify(inputData) 
-          }.then(response => response.json()).then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
+          });
 
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data; 
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
+    document.getElementById("weight").addEventListener("click", function() {
+            window.location.href = "/app/weight"
+        })
         document.getElementById("sleep").addEventListener("click", function() {
             window.location.href = "/app/sleep"
         })
-        document.getElementById("steps").addEventListener("click", function() {
+        document.getElementById("Steps").addEventListener("click", function() {
             window.location.href = "/app/steps"
         })  
         document.getElementById("Diet").addEventListener("click", function() {
             window.location.href = "/app/diet"
         })
-        document.getElementById("Nutrients").addEventListener("click", function() {
+        document.getElementById("Calories").addEventListener("click", function() {
             window.location.href = "/app/nutrients"
         })
-        document.getElementById("Excersise").addEventListener("click", function() {
-            window.location.href = "/app/excersise"
+        document.getElementById("Protein").addEventListener("click", function() {
+            window.location.href = "/app/nutrients"
+        })
+        document.getElementById("Exercise").addEventListener("click", function() {
+            window.location.href = "/app/exersise"
         })
         document.getElementById("ai-assistant").addEventListener("click", function() {
             window.location.href = "/app/assistant"
         })
+        
+        async function get_goal(name) {
+            const url_path = "/app/get_all_goals";
+            const inputData = { name: name };
+            try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
 
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data;
+            } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+            }
+          }
+
+        async function set_goal(name, goal) {
+          const url_path = "/app/set_all_goals";
+          const inputData = { name: name, weight_goal: goal };
+          try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data;
+          } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+          }
+        }
   </script>
 </body>
 
