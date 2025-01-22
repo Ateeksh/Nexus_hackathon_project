@@ -6,22 +6,224 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 20px;
+  color: #333;
+}
 
+div {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+div input[type="text"],
+div input[type="number"] {
+  width: 90%;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+div input[readonly] {
+  background-color: #f0f0f0;
+}
+
+input[type="button"] {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+input[type="button"]:hover {
+  background-color: #45a049;
+}
+
+  </style>
 <body>
-  <div id  = "goal">
-    <input type="text" value="0" id = "old_weight"readonly > Kg's
-  </div>
-    <div>
-        <input type="text" value=""  id="hours" placeholder="New weight"> Hours
-        <input type="text" value=""  id="minutes" placeholder="New weight"> Minutes
-        <input type  = "button" value  = 'submit' id = "nsubmitweight">
+    <div id  = "current">
+      Current sleep
+      <br>
+        <input type="number" value="" id="old_hours" placeholder="Hours" min="0" max="23" readonly> Hours
+        <input type="number" value="" id="old_minutes" placeholder="Minutes" min="0" max="59" readonly> Minutes
+        
     </div>
+    <div>
+      Set New sleep
+      <br>
+        <input type="number" value="" id="Nsleep_hours" placeholder="Hours" min="0" max="23"> Hours
+        <input type="number" value="" id="Nsleep_minutes" placeholder="Minutes" min="0" max="59"> Minutes
+
+    </div>
+    <div id  = "goal">
+      Goal 
+      <br>
+      <input type="number" value="" id="goals_hours" placeholder="Hours" min="0" max="23"> Hours
+      <input type="number" value="" id="goals_minutes" placeholder="Minutes" min="0" max="59"> Minutes
+    </div>
+    <input type  = "button" value  = 'submit' id = "nsubmitsleep">
   <script>
-        document.getElementById('nsubmitweight').addEventListener('click', function () {
-            const hours = Number(document.getElementById("hours").value)
-            const minutes = Number(document.getElementById("minutes").value)
+
+        document.addEventListener("DOMContentLoaded", async function () {
+          const name = localStorage.getItem("name")
+          const old = document.getElementById("old_hours")
+          const old2 = document.getElementById("old_minutes")
+          get_sleep(name).then(res =>{
+            console.log(res)
+            old.value = res[1]
+            old2.value = res[0]
+          })
+          const goalInput = document.getElementById("goals_hours");
+          const goalInput2 = document.getElementById("goals_minutes");
+            get_goal(name).then(res => {
+            console.log(res)
+            goalInput.value = res[1];
+            goalInput2.value = res[0];
+            
+            });
           
-        })  
+        })
+        async function get_goal(name) {
+            const url_path = "/app/get_all_goals";
+            const inputData = { name: name };
+            try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            const hours = Math.floor(data.sleep_goal / 60);
+            const minutes = Math.round(data.sleep_goal % 60);
+            return [hours, minutes];  
+            } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+            }
+          }
+
+        async function set_goal(name, goal) {
+          const url_path = "/app/set_all_goals";
+          const inputData = { name: name, sleep_goal: goal };
+          try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data;
+          } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+          }
+        }
+        document.getElementById('nsubmitsleep').addEventListener('click', function () {
+          const name = localStorage.getItem("name")
+            const new_sleep_hours = Number(document.getElementById("Nsleep_hours").value);
+            const new_sleep_minutes = Number(document.getElementById("Nsleep_minutes").value);
+            const new_sleep = new_sleep_hours * 60 + new_sleep_minutes;
+
+            const goal_hours = Number(document.getElementById("goals_hours").value);
+            const goal_minutes = Number(document.getElementById("goals_minutes").value);
+            const goal = goal_hours * 60 + goal_minutes;
+            const new_sleep_decimal = new_sleep_hours + new_sleep_minutes / 60;
+            const goal_decimal = goal_hours + goal_minutes / 60;
+          set_goal(name, goal_decimal).then(() => {
+            console.log("Goal set");
+            set_sleep(name,new_sleep_decimal).then(res =>{
+              console.log(res)
+              window.location.href = "/app/home"
+            })
+          });
+        })
+      async function get_sleep(input){
+      const url_path = "/app/allvalls/"
+      const inputData = { name: input};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          console.log(data)
+          const hours = Math.floor(data.sleep / 60);
+          const minutes = Math.round(data.sleep_goal % 60);
+          return [hours, minutes];  
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
+    async function set_sleep(input,sleep){
+      const url_path = "/app/set_all"
+      const inputData = { name: input,sleep:sleep};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
   </script>
 </body>
 

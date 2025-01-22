@@ -6,28 +6,152 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 20px;
+  color: #333;
+}
 
+div {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+div input[type="text"],
+div input[type="number"] {
+  width: 90%;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+div input[readonly] {
+  background-color: #f0f0f0;
+}
+
+input[type="button"] {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+input[type="button"]:hover {
+  background-color: #45a049;
+}
+
+  </style>
 <body>
     <div id  = "current">
-        <input type="text" value="0" id = "old_steps"readonly > Kg's
+      Current steps
+      <br>
+        <input type="text" value="0" id = "old_step"readonly > Kg's
     </div>
     <div>
-        <input type="text" value=""  id="Nsteps" placeholder="New steps">
-        <input type  = "button" value  = 'submit' id = "nsubmitsteps">
+      Set New steps
+      <br>
+        <input type="number" value="" id="Nstep" placeholder="New step"> Kg's
     </div>
+    <div id  = "goal">
+      Goal 
+      <br>
+      <input type="number" value="0" id = "goals" > Kg's
+    </div>
+    <input type  = "button" value  = 'submit' id = "nsubmitstep">
   <script>
+
         document.addEventListener("DOMContentLoaded", async function () {
-          name = localStorage.getItem("name")
-          const old = document.getElementById("old_steps")
-          get_steps(name).then(res =>{
+          const name = localStorage.getItem("name")
+          const old = document.getElementById("old_step")
+          get_step(name).then(res =>{
             old.value = res
           })
+          const goalInput = document.getElementById("goals");
+            get_goal(name).then(res => {
+            console.log(res)
+            goalInput.value = res;
+            });
+          
         })
-        document.getElementById('nsubmitsteps').addEventListener('click', function () {
-            const new_steps = Number(document.getElementById("Nsteps").value)
-            
+        async function get_goal(name) {
+            const url_path = "/app/get_all_goals";
+            const inputData = { name: name };
+            try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data.steps_goal;
+            } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+            }
+          }
+
+        async function set_goal(name, goal) {
+          const url_path = "/app/set_all_goals";
+          const inputData = { name: name, steps_goal: goal };
+          try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data;
+          } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+          }
+        }
+        document.getElementById('nsubmitstep').addEventListener('click', function () {
+          const name = localStorage.getItem("name")
+          const new_step = Number(document.getElementById("Nstep").value)
+          const goal = Number(document.getElementById("goal").value);
+          set_goal(name, goal).then(() => {
+            console.log("Goal set");
+            set_step(name,new_step).then(res =>{
+              console.log(res)
+              window.location.href = "/app/home"
+            })
+          });
         })
-        async function get_steps(input){
+        async function get_step(input){
       const url_path = "/app/allvalls/"
       const inputData = { name: input};
       try {
@@ -46,6 +170,7 @@
           }
 
           const data = await response.json();
+          console.log(data)
           return data.steps
       } catch (error) {
           console.error("Fetch error:", error);
@@ -54,7 +179,7 @@
     }
     async function set_step(input,step){
       const url_path = "/app/set_all"
-      const inputData = { name: input,step:step};
+      const inputData = { name: input,steps:step};
       try {
           const response = await fetch(url_path, {
               method: 'POST',

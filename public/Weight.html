@@ -6,7 +6,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 20px;
+  color: #333;
+}
 
+div {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+div input[type="text"],
+div input[type="number"] {
+  width: 90%;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+div input[readonly] {
+  background-color: #f0f0f0;
+}
+
+input[type="button"] {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+input[type="button"]:hover {
+  background-color: #45a049;
+}
+
+  </style>
 <body>
     <div id  = "current">
       Current Weight
@@ -16,7 +65,7 @@
     <div>
       Set New Weight
       <br>
-        <input type="number" value="" id="Nweight" placeholder="New weight">
+        <input type="number" value="" id="Nweight" placeholder="New weight"> Kg's
     </div>
     <div id  = "goal">
       Goal
@@ -39,7 +88,6 @@
             });
           
         })
-
         async function get_goal(name) {
             const url_path = "/app/get_all_goals";
             const inputData = { name: name };
@@ -65,6 +113,7 @@
             return null;
             }
           }
+        
         async function set_goal(name, goal) {
           const url_path = "/app/set_all_goals";
           const inputData = { name: name, weight_goal: goal };
@@ -98,6 +147,7 @@
             console.log("Goal set");
             set_weight(name,new_weight).then(res =>{
               console.log(res)
+              window.location.href = "/app/home"
             })
           });
         })

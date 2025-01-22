@@ -6,7 +6,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f4f6;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
+#logins {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+}
+
+
+#logins input[type="input"],
+#logins input[type="button"] {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none;
+}
+
+#logins input[type="input"]:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+
+#logins input[type="button"],
+#register {
+  background-color: #4a90e2;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#logins input[type="button"]:hover,
+#register:hover {
+  background-color: #357ab8;
+}
+
+
+#error {
+  color: #ff4d4d;
+  margin-top: 10px;
+  font-size: 14px;
+  display: none;
+}
+
+
+#register {
+  background-color: transparent;
+  color: #4a90e2;
+  border: 2px solid #4a90e2;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+#register:hover {
+  background-color: #4a90e2;
+  color: #ffffff;
+}
+
+div + div {
+  margin-top: 15px;
+}
+
+</style>
 <body>
   <div id = "logins">
     <input type = "input" id = "name" placeholder = "Email">

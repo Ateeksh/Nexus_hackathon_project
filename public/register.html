@@ -6,6 +6,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+<style>
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+
+#login, #personal-form, #error, #register-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+input[type="input"], input[type="number"], textarea {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+input[type="input"]::placeholder, input[type="number"]::placeholder {
+  color: #888;
+}
+
+textarea {
+  resize: none;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+
+#register {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#register:hover {
+  background: #0056b3;
+}
+
+#error {
+  margin-top: 20px;
+  color: red;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+@media (max-width: 480px) {
+  #login, #personal-form, #error {
+    padding: 15px;
+  }
+}
+
+</style>
 <body>
   <div id = "login">
     <input type = "input" id = "name" placeholder="Name">
