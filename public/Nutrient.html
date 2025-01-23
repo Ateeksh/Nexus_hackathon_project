@@ -6,26 +6,216 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fit AI</title>
 </head>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 20px;
+  color: #333;
+}
 
+div {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+div input[type="text"],
+div input[type="number"] {
+  width: 90%;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+div input[readonly] {
+  background-color: #f0f0f0;
+}
+
+input#nsubmitsleep {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+input#back {
+  display: block;
+  width: 10%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+input#redirect {
+  display: block;
+  width: 10%;
+  align-items: center;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  margin: 0 auto;
+}
+input[type="button"]:hover {
+  background-color: #45a049;
+}
+
+  </style>
 <body>
+  <div>
+  <input type = "button" id = "back" value = "back" >
+  </div>
     <div id  = "current">
-        <input type="text" value="0" readonly > Calories
-        <input type="text" value="0" readonly > g's of Protein
+      Current 
+      <br>
+        <input type="number" value="" id="old_hours" placeholder="Calories" min="0" max="23" readonly> Kcal
+        <input type="number" value="" id="old_minutes" placeholder="Protein" min="0" max="59" readonly> g 
+        
     </div>
     <div>
-        <input type="text" value=""  id="Calories" placeholder="Number of calories to add">
-        <input type="text" value=""  id="Protien" placeholder="Number of protien to add">
-        <input type  =" button"  value  = 'submit' id = "nsubmitcalories">
+      Set New 
+      <br>
+        <input type="number" value="" id="Nsleep_hours" placeholder="Calories" min="0" max="23"> Kcal
+        <input type="number" value="" id="Nsleep_minutes" placeholder="Protein" min="0" max="59"> g
+
     </div>
+    <div id  = "goal">
+      Goal 
+      <br>
+      <input type="number" value="" id="goals_hours" placeholder="Calories" min="0" max="23"> Kcal
+      <input type="number" value="" id="goals_minutes" placeholder="Protein" min="0" max="59"> g
+    </div>
+    <div style  = "text-align: center;">
+      <label style = "margin-bottom: 10px;" >Scan your Calories from here</label>
+      <input type  = "button" value  = 'Scan' id = "redirect">
+    </div>
+    <input type  = "button" value  = 'submit' id = "nsubmitsleep">
   <script>
+      document.getElementById('redirect').addEventListener('click', function () {
+        window.location.href = "/app/nutrient_counter";
+      });
         document.addEventListener("DOMContentLoaded", async function () {
-          name = localStorage.getItem("name")
-          const old = document.getElementById("old_weight")
-          get_weight(name).then(res =>{
-            old.value = res
+          const name = localStorage.getItem("name")
+          const old = document.getElementById("old_hours")
+          const old2 = document.getElementById("old_minutes")
+          get_nutrient(name).then(res =>{
+            console.log(res)
+            old.value = res[1]
+            old2.value = res[0]
           })
+          const goalInput = document.getElementById("goals_hours");
+          const goalInput2 = document.getElementById("goals_minutes");
+            get_goal(name).then(res => {
+            console.log(res)
+            goalInput.value = res[1];
+            goalInput2.value = res[0];
+            
+            });
+          
         })
-      async function get_nutrients(input){
+        document.getElementById('back').addEventListener('click', function () {
+          window.location.href = "/app/home";
+        });
+        async function get_goal(name) {
+            const url_path = "/app/get_all_goals";
+            const inputData = { name: name };
+            try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return [data.calories_goal, data.protein_goal];  
+            } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+            }
+          }
+
+        async function set_goal(name, calories,protein) {
+          const url_path = "/app/set_all_goals";
+          const inputData = { name: name, calories_goal: calories, protein:protein };
+          try {
+            const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(inputData)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+            }
+
+            const data = await response.json();
+            return data;
+          } catch (error) {
+            console.error("Fetch error:", error);
+            return null;
+          }
+        }
+        document.getElementById('nsubmitsleep').addEventListener('click', function () {
+          const name = localStorage.getItem("name")
+            var new_sleep_hours = Number(document.getElementById("Nsleep_hours").value);
+            var new_sleep_minutes = Number(document.getElementById("Nsleep_minutes").value);
+            const new_sleep = new_sleep_hours * 60 + new_sleep_minutes;
+
+            const goal_hours = Number(document.getElementById("goals_hours").value);
+            const goal_minutes = Number(document.getElementById("goals_minutes").value);
+            if (isNaN(new_sleep_hours) || new_sleep_hours === undefined) {
+                const oldHoursValue = document.getElementById("old_hours").value;
+                new_sleep_hours = oldHoursValue ? Number(oldHoursValue) : 0; // Default to 0 if empty
+            }
+
+            if (isNaN(new_sleep_minutes) || new_sleep_minutes === undefined) {
+                const oldMinutesValue = document.getElementById("old_minutes").value;
+                new_sleep_minutes = oldMinutesValue ? Number(oldMinutesValue) : 0; // Default to 0 if empty
+            }
+          else{
+          set_goal(name, goal_hours,goal_minutes).then(() => {
+            console.log("Goal set");
+            set_nutrient(name,new_sleep_hours,new_sleep_minutes).then(res =>{
+              console.log(res)
+              window.location.href = "/app/home"
+            })
+            
+          });
+          }
+        })
+      async function get_nutrient(input){
       const url_path = "/app/allvalls/"
       const inputData = { name: input};
       try {
@@ -44,17 +234,37 @@
           }
 
           const data = await response.json();
-          return [data.calories,data.protien]
+          return [data.calories, data.protein];  
       } catch (error) {
           console.error("Fetch error:", error);
           return null;
       }
     }
-        document.getElementById('nsubmitcalories').addEventListener('click', function () {
-            const protien = Number(document.getElementById("protien").value)
-            const calories = Number(document.getElementById("calories").value)
-            
-        })  
+    async function set_nutrient(input,calories,protein){
+      const url_path = "/app/set_all"
+      const inputData = { name: input,calories:calories,protein:protein};
+      try {
+          const response = await fetch(url_path, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json', 
+              },
+              body: JSON.stringify(inputData) 
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData);
+              return null;
+          }
+
+          const data = await response.json();
+          return data
+      } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+      }
+    }
   </script>
 </body>
 

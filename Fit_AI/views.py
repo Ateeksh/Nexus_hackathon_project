@@ -29,17 +29,54 @@ def ask(request):
         return JsonResponse({'response': response})
 
 
-def ask_gpt(prompt):
+def generateExercises(user):
+        initial_prompt = [
+          {
+            "role": "system",
+            "content": "You are a fitness assistant. Generate a list of exercises in JSON format. Each exercise should have a name, Reps, Sets, Timeperrep, and done status."
+          },
+          {
+            "role": "user",
+            "content": user
+          }
+        ]
+
+        messages = initial_prompt + [{"role": "user", "content": user}]
         APIKEY = os.getenv("OPENAI_API_KEY")
         client = OpenAI(api_key=APIKEY)
         
         completion = client.chat.completions.create(
             model="gpt-4o",
-            messages=prompt,
+            messages=messages,
             response_format={ "type": "json_object" }  
         )
         response = completion.choices[0].message.content
-        response = markdown.markdown(response)
+        return response
+
+def generateDiet(user):
+        initial_prompt = [
+          {
+            "role": "system",
+            "content": "You are a fitness assistant. Generate a list of diet items in JSON format. Each item should have a name, calories, protein, and eaten status."
+          },
+          {
+            "role": "user",
+            "content": user
+          }
+        ]
+
+        messages = initial_prompt + [{"role": "user", "content": user}]
+        APIKEY = os.getenv("OPENAI_API_KEY")
+        client = OpenAI(api_key=APIKEY)
+        
+        completion = client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            response_format={ "type": "json_object" }  
+        )
+        response = completion.choices[0].message.content
+        return response
+
 
 @csrf_exempt
 def file_upload(request):
@@ -244,6 +281,35 @@ def add_account(request):
         new_fitness.save()
         goals = UserGoals(name=name)
         goals.save()
+        # Generate exercises and diet
+        exercises = generateExercises(name)
+        diet = generateDiet(name)
+
+        # Add generated exercises to the fitness class
+        for exercise in exercises:
+            exercise_obj, created = Exercises.objects.get_or_create(
+          name=exercise['name'],
+          defaults={
+              'Reps': exercise['Reps'],
+              'Sets': exercise['Sets'],
+              'Timeperrep': exercise['Timeperrep'],
+              'done': exercise['done']
+          }
+            )
+            new_fitness.exercise.add(exercise_obj)
+
+        # Add generated diet to the fitness class
+        for food in diet:
+            food_obj, created = FoodItem.objects.get_or_create(
+          name=food['name'],
+          defaults={
+              'calories': food['calories'],
+              'protein': food['protein'],
+              'eaten': food['eaten']
+          }
+            )
+            new_fitness.diet.add(food_obj)
+
         return JsonResponse({'message': 'Account created successfully', 'user_id': name})
 
 @csrf_exempt
@@ -272,6 +338,12 @@ def getExercise(request):
         name = body.get("name", "")  
         user_account = get_object_or_404(Fitness, name=name) 
         return JsonResponse({'food': [exercises.name for exercises in user_account.exercise.all()]})
+@csrf_exempt
+def getDiet(request):
+        body = json.loads(request.body)
+        name = body.get("name", "")  
+        user_account = get_object_or_404(Fitness, name=name) 
+        return JsonResponse({'food': [exercises.name for exercises in user_account.diet.all()]})
 
 @csrf_exempt
 def set_calories(request):

@@ -38,9 +38,21 @@ div input[readonly] {
   background-color: #f0f0f0;
 }
 
-input[type="button"] {
+input#nsubmitsleep {
   display: block;
   width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+input#back {
+  display: block;
+  width: 10%;
   padding: 10px 15px;
   font-size: 16px;
   color: #fff;
@@ -57,22 +69,25 @@ input[type="button"]:hover {
 
   </style>
 <body>
+  <div>
+  <input type = "button" id = "back" value = "back" >
+  </div>
     <div id  = "current">
-      Current sleep
+      Current 
       <br>
         <input type="number" value="" id="old_hours" placeholder="Hours" min="0" max="23" readonly> Hours
         <input type="number" value="" id="old_minutes" placeholder="Minutes" min="0" max="59" readonly> Minutes
         
     </div>
     <div>
-      Set New sleep
+      Set New
       <br>
         <input type="number" value="" id="Nsleep_hours" placeholder="Hours" min="0" max="23"> Hours
         <input type="number" value="" id="Nsleep_minutes" placeholder="Minutes" min="0" max="59"> Minutes
 
     </div>
     <div id  = "goal">
-      Goal 
+      Change goal
       <br>
       <input type="number" value="" id="goals_hours" placeholder="Hours" min="0" max="23"> Hours
       <input type="number" value="" id="goals_minutes" placeholder="Minutes" min="0" max="59"> Minutes
@@ -99,6 +114,9 @@ input[type="button"]:hover {
             });
           
         })
+        document.getElementById('back').addEventListener('click', function () {
+          window.location.href = "/app/home";
+        });
         async function get_goal(name) {
             const url_path = "/app/get_all_goals";
             const inputData = { name: name };
@@ -118,9 +136,10 @@ input[type="button"]:hover {
             }
 
             const data = await response.json();
-            const hours = Math.floor(data.sleep_goal / 60);
-            const minutes = Math.round(data.sleep_goal % 60);
-            return [hours, minutes];  
+            console.log(data)
+          const hours = Math.floor(Number(data.sleep_goal) / 60);
+          const minutes = Math.round(Number(data.sleep_goal % 60));
+          return [hours, minutes];  
             } catch (error) {
             console.error("Fetch error:", error);
             return null;
@@ -160,16 +179,22 @@ input[type="button"]:hover {
 
             const goal_hours = Number(document.getElementById("goals_hours").value);
             const goal_minutes = Number(document.getElementById("goals_minutes").value);
-            const goal = goal_hours * 60 + goal_minutes;
             const new_sleep_decimal = new_sleep_hours + new_sleep_minutes / 60;
             const goal_decimal = goal_hours + goal_minutes / 60;
+          if (isNaN(new_sleep_hours) || isNaN(new_sleep_minutes)) {
+            alert("Please enter valid sleep hours and minutes.");
+            return;
+          }
+          else{
           set_goal(name, goal_decimal).then(() => {
             console.log("Goal set");
             set_sleep(name,new_sleep_decimal).then(res =>{
               console.log(res)
               window.location.href = "/app/home"
             })
+            
           });
+          }
         })
       async function get_sleep(input){
       const url_path = "/app/allvalls/"
@@ -191,8 +216,8 @@ input[type="button"]:hover {
 
           const data = await response.json();
           console.log(data)
-          const hours = Math.floor(data.sleep / 60);
-          const minutes = Math.round(data.sleep_goal % 60);
+          const hours = Math.floor(Number(data.sleep) / 60);
+          const minutes = Math.round(Number(data.sleep % 60));
           return [hours, minutes];  
       } catch (error) {
           console.error("Fetch error:", error);

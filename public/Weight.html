@@ -37,6 +37,18 @@ div input[type="number"] {
 div input[readonly] {
   background-color: #f0f0f0;
 }
+input#back {
+  display: block;
+  width: 10%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
 
 input[type="button"] {
   display: block;
@@ -57,6 +69,9 @@ input[type="button"]:hover {
 
   </style>
 <body>
+  <div>
+    <input type = "button" id = "back" value = "back" >
+    </div>
     <div id  = "current">
       Current Weight
       <br>
@@ -113,7 +128,9 @@ input[type="button"]:hover {
             return null;
             }
           }
-        
+          document.getElementById('back').addEventListener('click', function () {
+          window.location.href = "/app/home";
+        });
         async function set_goal(name, goal) {
           const url_path = "/app/set_all_goals";
           const inputData = { name: name, weight_goal: goal };

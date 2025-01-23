@@ -47,7 +47,7 @@ class UserProfile(models.Model):
 class UserGoals(models.Model):
     name = models.CharField(max_length=255)
     steps_goal =  models.DecimalField(decimal_places=0,max_digits=5,default=10000) 
-    sleep_goal = models.DecimalField(decimal_places=2,max_digits=2,default=8.00) 
+    sleep_goal = models.DecimalField(decimal_places=0,max_digits=2,default=8.00) 
     calories_goal = models.DecimalField(decimal_places=0,max_digits=5,default=2000) 
     weight_goal = models.DecimalField(decimal_places=2,max_digits=5,default=50) 
     protein_goal = models.DecimalField(decimal_places=2,max_digits=5,default=30)
@@ -58,7 +58,7 @@ class User(models.Model):
     name = models.CharField(max_length=255)
     date = models.DateField()
     steps =  models.DecimalField(decimal_places=0,max_digits=5,default=0) 
-    sleep = models.DecimalField(decimal_places=2,max_digits=2,default=0.00) 
+    sleep = models.DecimalField(decimal_places=0,max_digits=2,default=0.00) 
     calories = models.DecimalField(decimal_places=0,max_digits=5,default=0) 
     weight = models.DecimalField(decimal_places=2,max_digits=5,default=0) 
     protein = models.DecimalField(decimal_places=2,max_digits=5,default=0)

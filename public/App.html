@@ -106,20 +106,20 @@
             <div id="progress-bar2" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>
-    <div id  = "Protein">
-        Protein
-        <br>
-        <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "Protein_val">Text</label> 
-        <div id="progress-container" style=" border: 1px solid black; height: 30px;">
-            <div id="progress-bar3" style="width: 0%; background-color: green; height: 100%;"></div>
-        </div>    
-    </div>  
     <div id  = "Calories">
         Calories
         <br>
         <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "Calories_val">Text</label> 
         <div id="progress-container" style=" border: 1px solid black; height: 30px;">
             <div id="progress-bar4" style="width: 0%; background-color: green; height: 100%;"></div>
+        </div>    
+    </div>  
+    <div id  = "Protein">
+        Protein
+        <br>
+        <label style = "margin-right:30px;margin-top:10px;text-align: right;" id = "Protein_val">Text</label> 
+        <div id="progress-container" style=" border: 1px solid black; height: 30px;">
+            <div id="progress-bar3" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>  
     <div id  = "Diet">
@@ -187,10 +187,10 @@
             window.location.href = "/app/diet"
         })
         document.getElementById("Calories").addEventListener("click", function() {
-            window.location.href = "/app/nutrients"
+            window.location.href = "/app/Nutrient_viewer"
         })
         document.getElementById("Protein").addEventListener("click", function() {
-            window.location.href = "/app/nutrients"
+            window.location.href = "/app/Nutrient_viewer"
         })
         document.getElementById("Exercise").addEventListener("click", function() {
             window.location.href = "/app/exersise"
