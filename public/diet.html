@@ -1,87 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fit AI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 20px;
+    }
+    table {
+      width: 70%;
+      border-collapse: collapse;
+      margin: 0 auto;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    thead {
+      background-color: #4CAF50;
+      color: white;
+    }
+    th, td {
+      padding: 10px 15px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+    .btn {
+      padding: 8px 12px;
+      color: white;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
-
 <body>
-  <table id="dietTable" border="1">
+  <h2 style="text-align: center;">Food Items with Calories and Protein</h2>
+  <table>
     <thead>
       <tr>
-        <th>Food Name</th>
-        <th>Calories</th>
-        <th>Protein</th>
+        <th>Food Item</th>
+        <th>Calories (kcal)</th>
+        <th>Protein (g)</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      <!-- Rows will be added here dynamically -->
+      <tr>
+        <td>Chicken Breast</td>
+        <td>165</td>
+        <td>31</td>
+        <td><button class="btn">Complete</button></td>
+      </tr>
+      <tr>
+        <td>Egg (Large)</td>
+        <td>70</td>
+        <td>6</td>
+        <td><button class="btn">Complete</button></td>
+      </tr>
+      <tr>
+        <td>Oatmeal (1 cup)</td>
+        <td>150</td>
+        <td>5</td>
+        <td><button class="btn">Complete</button></td>
+      </tr>
+      <tr>
+        <td>Almonds (1 oz)</td>
+        <td>160</td>
+        <td>6</td>
+        <td><button class="btn">Complete</button></td>
+      </tr>
+      <tr>
+        <td>Salmon (3 oz)</td>
+        <td>206</td>
+        <td>22</td>
+        <td><button class="btn">Complete</button></td>
+      </tr>
+      <tr>
+        <td>Greek Yogurt (1 cup)</td>
+        <td>100</td>
+        <td>10</td>
+        <td><button class="btn">Complete</button></td>
+      </tr>
     </tbody>
   </table>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-      const name = localStorage.getItem("name");
-      get_diet(name).then((res) => {
-        console.log(res)
-        const tbody = document.querySelector("#dietTable tbody");
-        res.forEach(item => {
-          const row = document.createElement("tr");
-
-          const foodNameCell = document.createElement("td");
-          foodNameCell.textContent = item.food_name;
-          row.appendChild(foodNameCell);
-
-          const caloriesCell = document.createElement("td");
-          caloriesCell.textContent = item.calories;
-          row.appendChild(caloriesCell);
-
-          const proteinCell = document.createElement("td");
-          proteinCell.textContent = item.protein;
-          row.appendChild(proteinCell);
-
-          const actionCell = document.createElement("td");
-          const deleteButton = document.createElement("button");
-          deleteButton.textContent = "Delete";
-          deleteButton.addEventListener("click", () => {
-            row.remove();
-          });
-          actionCell.appendChild(deleteButton);
-          row.appendChild(actionCell);
-
-          tbody.appendChild(row);
-        });
-      });
-    })
-    async function get_diet(name) {
-            const url_path = "/app/get_diet";
-            const inputData = { name: name };
-            try {
-            const response = await fetch(url_path, {
-              method: 'POST',
-              headers: {
-              'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(inputData)
-            });
-
-            if (!response.ok) {
-              const errorData = await response.json();
-              console.error("Error:", errorData);
-              return null;
-            }
-
-            const data = await response.json();
-            return data.food;
-            } catch (error) {
-            console.error("Fetch error:", error);
-            return null;
-            }
-          }
-  </script>
 </body>
-
 </html>

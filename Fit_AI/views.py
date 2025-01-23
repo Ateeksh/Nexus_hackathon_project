@@ -389,6 +389,11 @@ def diet(request):
   return render(request,'diet.html')
 
 @csrf_exempt
+def excerCise(request):
+  return render(request,'Excersise.html')
+
+
+@csrf_exempt
 def sleep(request):
   return render(request,'sleep.html')
 

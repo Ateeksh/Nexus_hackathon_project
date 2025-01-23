@@ -26,5 +26,6 @@ urlpatterns = [
     path('set_all_goals', views.set_all_goals, name='set_all_goals'),
     path('get_all_goals', views.get_all_goals, name='get_all_goals'),
     path('set_all', views.set_all, name='set_all'),
+    path('excer', views.excerCise, name='excerCise'),
 ]
 

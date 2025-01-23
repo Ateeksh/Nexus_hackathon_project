@@ -1,16 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fit AI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f8f9fa;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .button {
+      padding: 10px 15px;
+      border-radius: 5px;
+      background-color: #28a745;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .button:hover {
+      background-color: #218838;
+    }
+  </style>
 </head>
-
 <body>
-
-  <script>
-  </script>
+  <h2>Workout Plan</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Exercise</th>
+        <th>Reps/Duration</th>
+        <th>Sets</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Push-ups</td>
+        <td>15 reps</td>
+        <td>3 sets</td>
+        <td><button class="button">Details</button></td>
+      </tr>
+      <tr>
+        <td>Plank</td>
+        <td>1 min</td>
+        <td>3 sets</td>
+        <td><button class="button">Details</button></td>
+      </tr>
+      <tr>
+        <td>Squats</td>
+        <td>20 reps</td>
+        <td>4 sets</td>
+        <td><button class="button">Details</button></td>
+      </tr>
+      <tr>
+        <td>Burpees</td>
+        <td>12 reps</td>
+        <td>3 sets</td>
+        <td><button class="button">Details</button></td>
+      </tr>
+      <tr>
+        <td>Jumping Jacks</td>
+        <td>2 min</td>
+        <td>3 sets</td>
+        <td><button class="button">Details</button></td>
+      </tr>
+    </tbody>
+  </table>
 </body>
-
 </html>
