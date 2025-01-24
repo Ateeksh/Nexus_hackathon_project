@@ -44,9 +44,25 @@
     .button:hover {
       background-color: #218838;
     }
+    input#back {
+  display: block;
+  width: 10%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
   </style>
 </head>
 <body>
+  <div>
+    <input type = "button" id = "back" value = "back" >
+    </div>
   <h2>Workout Plan</h2>
   <table>
     <thead>
@@ -90,5 +106,10 @@
       </tr>
     </tbody>
   </table>
+  <script>
+        document.getElementById('back').addEventListener('click', function () {
+          window.location.href = "/app/home";
+        });
+  </script>
 </body>
 </html>
