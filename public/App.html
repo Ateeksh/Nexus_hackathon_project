@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fit AI</title>
+  <title>FitterMe</title>
 </head>
 <style>
 * {
@@ -50,13 +50,13 @@
 }
 
 #Diet, #Exercise {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 20px;
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin: 20px auto; /* Center the containers themselves */
 }
 
 #Diet img, #Exercise img {
-    width: 100%;
     max-width: 150px;
     height: auto;
     border-radius: 8px;
@@ -122,11 +122,13 @@
             <div id="progress-bar3" style="width: 0%; background-color: green; height: 100%;"></div>
         </div>    
     </div>  
-    <div id  = "Diet">
-        <img src ="https://media.istockphoto.com/id/984186952/vector/salad-icon-vector-isolated.jpg?s=612x612&w=0&k=20&c=SRmmPC6lgIXZdQT_jpfYVyqiVhmaweA3yvrcv9zRnus=">
-    </div>
-    <div id  = "Exercise">
-        <img src = "https://img.freepik.com/premium-vector/man-doing-push-ups-cartoon-illustration_1220412-548.jpg?semt=ais_hybrid">
+        <div style="margin-left: auto;margin-right: auto;"></div>
+        <div id  = "Diet">
+            <img src ="https://media.istockphoto.com/id/984186952/vector/salad-icon-vector-isolated.jpg?s=612x612&w=0&k=20&c=SRmmPC6lgIXZdQT_jpfYVyqiVhmaweA3yvrcv9zRnus=">
+        </div>
+        <div id  = "Exercise">
+            <img src = "https://img.freepik.com/premium-vector/man-doing-push-ups-cartoon-illustration_1220412-548.jpg?semt=ais_hybrid">
+        </div>
     </div>
     <input type="button" id="ai-assistant" value="AI Assistant" style="position: fixed; left: 50%; bottom: 120px; transform: translateX(-50%); background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
     <script>
