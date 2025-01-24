@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="https://github.com/Ateeksh/Image_fitterme/blob/main/FitterMe.png?raw=true" type="image/png">
   <title>FitterMe</title>
 </head>
 <style>
@@ -29,7 +30,7 @@ body {
 
 #logins input[type="input"],
 #logins input[type="button"] {
-  width: 100%;
+  width: 80%;
   margin: 10px 0;
   padding: 10px;
   border: 1px solid #ccc;
@@ -43,8 +44,8 @@ body {
   box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
 }
 
-
 #logins input[type="button"],
+
 #register {
   background-color: #4a90e2;
   color: #ffffff;
@@ -91,28 +92,23 @@ div + div {
     <input type = "input" id = "name" placeholder = "Email">
     <input type = "input" id = "password" placeholder = "password">
     <input type = "button" id = "login" value = "login">
+    <input type="button" id = "register" value = "register instead" >
   </div>
   <div id = "error">
 
   </div>
   <div>
-    <input type="button" id = "register" value = "register instead" >
   </div>
 
   <script>
   url = ""
   document.addEventListener("DOMContentLoaded", async function () {
-          try{
-            a = retrieve_cookies()
-            verify = await check(a[0],a[1])
-            if (verify==true){
-              const uid = generateUniqueId()
-              set_uid(username,uid)
-              window.location.href = `app/home`
-            }
-            else{}
-          }
-          catch{}
+    const name = localStorage.getItem("name") 
+    const password = localStorage.getItem("password")
+    if (name && password) {
+      document.getElementById("name").value = name;
+      document.getElementById("password").value = password;
+    }
         });
   document.getElementById("login").addEventListener("click", function() {
             const username = document.getElementById("name").value.toLowerCase().replace(/\s+/g, '')
@@ -215,11 +211,7 @@ div + div {
     localStorage.setItem('name', name);
     localStorage.setItem('password', password);
   }
-  function retrieve_cookies(){
-    var a=localStorage.getItem('name');
-    var b=localStorage.getItem('password');
-    return [a,b]
-  }
+  
   document.getElementById("register").addEventListener("click", function() {
         window.location.href = url+"/app/register";
     });

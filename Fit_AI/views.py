@@ -12,6 +12,8 @@ import os
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
 import markdown
+from django.db import connection
+import re
 load_dotenv()
 @csrf_exempt
 def ask(request):
@@ -25,10 +27,30 @@ def ask(request):
             messages=prompt
         )
         response = completion.choices[0].message.content
-        response = markdown.markdown(response)
+        info = extract_code(response)
+        if extract_code(response)==False:
+          response = markdown.markdown(response)
+        else:
+            if isinstance(info, str):
+                response = info.split("\n")
+                for command in response:
+                    try:
+                        with connection.cursor() as cursor:
+                            cursor.execute(command)
+                    except Exception as e:
+                        print(f"Error executing command: {command}")
+                        print(f"Error: {e}")
+            response = "\n".join([line for line in response if not line.startswith("```")])
         return JsonResponse({'response': response})
 
+def extract_code(input_text):
+    # Regular expression to match code blocks enclosed in triple backticks
+    code_block_pattern = r"```(?:[\w]+)?\n([\s\S]*?)\n```"
+    matches = re.findall(code_block_pattern, input_text)
 
+    if matches:
+        return matches  # Return a list of code snippets
+    return False  # Return False if no code snippets are found
 def generateExercises(user):
         initial_prompt = [
           {
@@ -281,35 +303,31 @@ def add_account(request):
         new_fitness.save()
         goals = UserGoals(name=name)
         goals.save()
-        # Generate exercises and diet
-        exercises = generateExercises(name)
-        diet = generateDiet(name)
-
-        # Add generated exercises to the fitness class
-        for exercise in exercises:
-            exercise_obj, created = Exercises.objects.get_or_create(
-          name=exercise['name'],
-          defaults={
-              'Reps': exercise['Reps'],
-              'Sets': exercise['Sets'],
-              'Timeperrep': exercise['Timeperrep'],
-              'done': exercise['done']
-          }
+        exercises_data = generateExercises(name)
+        diet_data = generateDiet(name)
+        print(diet)
+        # Populating FoodItem model
+        for diet in diet_data:
+            FoodItem.objects.create(
+                name=diet["name"],
+                calories=diet["calories"],
+                protein=diet["protein"],
+                eaten=diet["eaten"]
             )
-            new_fitness.exercise.add(exercise_obj)
 
-        # Add generated diet to the fitness class
-        for food in diet:
-            food_obj, created = FoodItem.objects.get_or_create(
-          name=food['name'],
-          defaults={
-              'calories': food['calories'],
-              'protein': food['protein'],
-              'eaten': food['eaten']
-          }
+        # Populating Exercises model
+        for exercise in exercises_data:
+            Exercises.objects.create(
+                name=exercise["name"],
+                Reps=exercise["reps"] if exercise["reps"] is not None else 0,
+                Sets=exercise["sets"],
+                Timeperrep=exercise["timePerRep"],
+                done=exercise["done"]
             )
-            new_fitness.diet.add(food_obj)
 
+        fitness_instance = Fitness.objects.create(name=name)
+        fitness_instance.diet.add(*FoodItem.objects.all())
+        fitness_instance.exercise.add(*Exercises.objects.all())
         return JsonResponse({'message': 'Account created successfully', 'user_id': name})
 
 @csrf_exempt
@@ -328,8 +346,9 @@ def get_user(request):
           user_goals = str(get_object_or_404(UserGoals, name=name))
         except:
             print("else")
-        final = user_account+"\n"+user_pro+"\n"+user_goals
-        print(final) 
+        user_exercise = get_object_or_404(Fitness, name=name) 
+
+        final = user_account+"\n"+user_pro+"\n"+user_goals+"\n"+str([exercises.name for exercises in user_exercise.exercise.all()])+"\n"+str([exercises.name for exercises in user_exercise.diet.all()])
         return JsonResponse({'User': final})
 
 @csrf_exempt
@@ -363,6 +382,11 @@ def set_calories(request):
             return JsonResponse({"success": True})
         return JsonResponse({"success": False})
 
+def AI_command(request):
+    body = json.loads(request.body)
+    name = body.get("name", "")
+    commands = body.get("code", "")
+
 
 @csrf_exempt
 def login(request):
@@ -376,9 +400,6 @@ def register(request):
 def Nutrient_info(request):
   return render(request,'Nutrient.html')
 
-@csrf_exempt
-def exercise_info(request):
-  return render(request,'exercise.html')
 
 @csrf_exempt
 def main(request):

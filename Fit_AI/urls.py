@@ -10,7 +10,6 @@ urlpatterns = [
     path('scan/', views.file_upload, name='Nutrient_checker'),
     path('Nutrient_viewer', views.Nutrient_info, name='Calories'),
     path('diet', views.diet, name='diet'),
-    path('get_exersise', views.exercise_info, name='exersise'),
     path('get_diet', views.getDiet, name='getdiet'),
     path('exercise', views.getExercise, name='exercise'),
     path('sleep', views.sleep, name='sleep'),
@@ -27,5 +26,6 @@ urlpatterns = [
     path('get_all_goals', views.get_all_goals, name='get_all_goals'),
     path('set_all', views.set_all, name='set_all'),
     path('excer', views.excerCise, name='excerCise'),
+    path('get_exercise', views.getExercise, name='get_exercise'),
 ]
 
