@@ -420,11 +420,8 @@ def sleep(request):
 
 @csrf_exempt
 def steps(request):
-  return render(request,'steps.html')
+  return render(request,'Steps.html')
 
-@csrf_exempt
-def steps(request):
-  return render(request,'steps.html')
 
 @csrf_exempt
 def Ai(request):
