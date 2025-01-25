@@ -416,7 +416,7 @@ def excerCise(request):
 
 @csrf_exempt
 def sleep(request):
-  return render(request,'sleep.html')
+  return render(request,'Sleep.html')
 
 @csrf_exempt
 def steps(request):
