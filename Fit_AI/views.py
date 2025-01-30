@@ -184,24 +184,24 @@ def set_all(request):
   
   protein = body.get("protein", None)
   if protein is not None:
-    user_account.protein = protein
+    user_account.protein += protein
   
   calories = body.get("calories", None)
   if calories is not None:
-    user_account.calories = calories
+    user_account.calories += calories
   
   weight = body.get("weight", None)
   if weight is not None:
-    print(weight)
-    user_account.weight = weight
+    if weight != 0:
+      user_account.weight = weight
   
   sleep = body.get("sleep", None)
   if sleep is not None:
-    user_account.sleep = sleep
+    user_account.sleep += sleep
   
   steps = body.get("steps", None)
   if steps is not None:
-    user_account.steps = steps
+    user_account.steps += steps
   
   user_account.save()
   return JsonResponse({'message': 'User metrics set successfully', 'user_id': name})

@@ -162,7 +162,7 @@ input[type="button"]:hover {
         document.getElementById('nsubmitstep').addEventListener('click', function () {
           const name = localStorage.getItem("name")
           const new_step = Number(document.getElementById("Nstep").value)
-          const goal = Number(document.getElementById("goal").value);
+          const goal = Number(document.getElementById("goals").value);
           set_goal(name, goal).then(() => {
             console.log("Goal set");
             set_step(name,new_step).then(res =>{
