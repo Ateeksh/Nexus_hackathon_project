@@ -134,6 +134,7 @@ input[type="button"]:hover {
           window.location.href = "/app/home";
         });
         async function set_goal(name, goal) {
+          console.log(goal)
           const url_path = "/app/set_all_goals";
           const inputData = { name: name, steps_goal: goal };
           try {
