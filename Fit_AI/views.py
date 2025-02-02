@@ -210,8 +210,7 @@ def set_all(request):
   
   sleep = body.get("sleep", None)
   if sleep is not None:
-    user_account.sleep += sleep
-  
+    user_account.sleep += Decimal(sleep)
   steps = body.get("steps", None)
   if steps is not None:
     user_account.steps += steps
