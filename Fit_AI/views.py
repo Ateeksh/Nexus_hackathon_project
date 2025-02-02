@@ -153,6 +153,19 @@ def block_user(request):
         return JsonResponse({'message': 'User blocked successfully', 'user_id': name})
 
 @csrf_exempt
+def reset_user(request):
+        body = json.loads(request.body)
+        name = body.get("name", "")  
+        user = get_object_or_404(User, name=name)
+        user.steps = 0
+        user.sleep = 0
+        user.calories = 0
+        user.weight = 0
+        user.protein = 0
+        user.save()
+        
+        return JsonResponse({'message': 'User reset successfully', 'user_id': name})
+@csrf_exempt
 def check_name(request):
             try:
                 body = json.loads(request.body)
@@ -306,7 +319,6 @@ def add_account(request):
         exercises_data = generateExercises(name)
         diet_data = generateDiet(name)
         print(diet)
-        # Populating FoodItem model
         for diet in diet_data:
             FoodItem.objects.create(
                 name=diet["name"],
@@ -314,8 +326,6 @@ def add_account(request):
                 protein=diet["protein"],
                 eaten=diet["eaten"]
             )
-
-        # Populating Exercises model
         for exercise in exercises_data:
             Exercises.objects.create(
                 name=exercise["name"],
