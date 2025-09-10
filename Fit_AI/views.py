@@ -86,7 +86,6 @@ def generateDiet(user):
             "content": user
           }
         ]
-
         messages = initial_prompt + [{"role": "user", "content": user}]
         APIKEY = os.getenv("OPENAI_API_KEY")
         client = OpenAI(api_key=APIKEY)
@@ -274,6 +273,7 @@ def set_all_goals(request):
   
   weight_goal = body.get("weight_goal", None)
   if weight_goal is not None:
+    print(weight_goal)
     user_goals.weight_goal = weight_goal
   
   sleep_goal = body.get("sleep_goal", None)

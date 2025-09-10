@@ -27,5 +27,5 @@ urlpatterns = [
     path('set_all', views.set_all, name='set_all'),
     path('excer', views.excerCise, name='excerCise'),
     path('get_exercise', views.getExercise, name='get_exercise'),
-]
+] 
 

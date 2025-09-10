@@ -142,7 +142,7 @@ input[type="button"]:hover {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify(inputData)
-            });
+            }); 
 
             if (!response.ok) {
               const errorData = await response.json();

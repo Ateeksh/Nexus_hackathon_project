@@ -76,12 +76,8 @@ WSGI_APPLICATION = 'Fitness_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fitterme',            # Replace with your database name
-        'USER': 'fitterme_user',          # Replace with your username
-        'PASSWORD': 'raPFYGww5fCUfHR0aCy8tC9DbW6m4tZX',      # Replace with your password
-        'HOST': 'dpg-cuaa0mdds78s739li94g-a',          # Replace with the host address
-        'PORT': '5432',              # Replace with the port (default is 5432)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
 
